@@ -191,6 +191,31 @@ p {
   flex-shrink: 0;
 }
 
+table {
+  font-size: 12px;
+  border-collapse: collapse;
+}
+
+caption {
+  caption-side: bottom;
+  padding: 10px;
+  font-weight: bold;
+}
+
+thead, tfoot {
+  background-color: rgba(100, 0, 255, 0.2);
+}
+
+th, td {
+  border: 1px solid rgb(160, 160, 160);
+  padding: 8px 10px;
+  text-align: center;
+}
+
+tbody > tr:nth-of-type(even) {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
 .text {
   margin: 1px;
   overflow: hidden;
@@ -202,7 +227,7 @@ p {
   background: radial-gradient(#000000, 50%, #162644);
   min-height: 100vh;
   display: flex;
-  padding: 4px;
+  padding: 16px;
   color: white;
 }
 
@@ -213,4 +238,16 @@ p {
 
 .flex-row {
   display: flex;
+}
+
+.button-table {
+  width: 64px;
+}
+
+.table-div {
+  overflow: auto;
+  margin: 4px;
+  max-width: calc(100vw - 32px);
+  max-height: calc(100vh - 128px);
+  border: 2px solid rgb(200, 200, 200);
 }

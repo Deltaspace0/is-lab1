@@ -13,6 +13,7 @@ export interface Person {
   id: number;
   name: string;
   coordinates: Coordinates;
+  creationDate: string;
   eyeColor: string;
   hairColor: string;
   location: Location;
