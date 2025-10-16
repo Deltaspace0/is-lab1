@@ -21,6 +21,8 @@ import com.deltaspace.lab1.repository.CoordinatesRepository;
 import com.deltaspace.lab1.repository.LocationRepository;
 import com.deltaspace.lab1.repository.PersonRepository;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/person")
 public class PersonController {
@@ -67,7 +69,7 @@ public class PersonController {
 
     @PostMapping
     public ResponseEntity<Person> createPerson(
-        @RequestBody Person person
+        @Valid @RequestBody Person person
     ) throws URISyntaxException {
         if (person.getCoordinates() != null) {
             Coordinates coordinates = handleCoordinates(person.getCoordinates());
@@ -85,7 +87,7 @@ public class PersonController {
     @PutMapping("/{id}")
     public ResponseEntity<Person> updatePerson(
         @PathVariable Integer id,
-        @RequestBody Person person
+        @Valid @RequestBody Person person
     ) {
         Person currentPerson = personRepository
             .findById(id)
