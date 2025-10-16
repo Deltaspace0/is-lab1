@@ -14,12 +14,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.deltaspace.lab1.model.Coordinates;
-import com.deltaspace.lab1.model.Location;
 import com.deltaspace.lab1.model.Person;
-import com.deltaspace.lab1.repository.CoordinatesRepository;
-import com.deltaspace.lab1.repository.LocationRepository;
-import com.deltaspace.lab1.repository.PersonRepository;
+import com.deltaspace.lab1.service.PersonService;
 
 import jakarta.validation.Valid;
 
@@ -27,59 +23,27 @@ import jakarta.validation.Valid;
 @RequestMapping("/person")
 public class PersonController {
 
-    private final PersonRepository personRepository;
-    private final CoordinatesRepository coordinatesRepository;
-    private final LocationRepository locationRepository;
+    private final PersonService personService;
 
-    public PersonController(
-        PersonRepository personRepository,
-        CoordinatesRepository coordinatesRepository,
-        LocationRepository locationRepository
-    ) {
-        this.personRepository = personRepository;
-        this.coordinatesRepository = coordinatesRepository;
-        this.locationRepository = locationRepository;
-    }
-
-    private Coordinates handleCoordinates(Coordinates coordinates) {
-        return coordinatesRepository.save(coordinates);
-    }
-
-    private Location handleLocation(Location location) {
-        Integer id = location.getId();
-        if (id != null && id > 0) {
-            return locationRepository
-                .findById(id)
-                .orElseThrow(() -> new RuntimeException("No location"));
-        }
-        return locationRepository.save(location);
+    public PersonController(PersonService personService) {
+        this.personService = personService;
     }
 
     @GetMapping
-    public List<Person> getPersons() {
-        return personRepository.findAll();
+    public List<Person> getPersonList() {
+        return personService.getPersonList();
     }
 
     @GetMapping("/{id}")
     public Person getPerson(@PathVariable Integer id) {
-        return personRepository
-            .findById(id)
-            .orElseThrow(RuntimeException::new);
+        return personService.getPerson(id);
     }
 
     @PostMapping
-    public ResponseEntity<Person> createPerson(
+    public ResponseEntity<Person> addPerson(
         @Valid @RequestBody Person person
     ) throws URISyntaxException {
-        if (person.getCoordinates() != null) {
-            Coordinates coordinates = handleCoordinates(person.getCoordinates());
-            person.setCoordinates(coordinates);
-        }
-        if (person.getLocation() != null) {
-            Location location = handleLocation(person.getLocation());
-            person.setLocation(location);
-        }
-        Person savedPerson = personRepository.save(person);
+        Person savedPerson = personService.addPerson(person);
         URI uri = new URI("/person/"+savedPerson.getId());
         return ResponseEntity.created(uri).body(savedPerson);
     }
@@ -89,34 +53,13 @@ public class PersonController {
         @PathVariable Integer id,
         @Valid @RequestBody Person person
     ) {
-        Person currentPerson = personRepository
-            .findById(id)
-            .orElseThrow(RuntimeException::new);
-        Coordinates coordinates = person.getCoordinates();
-        if (coordinates != null) {
-            Coordinates currentCoordinates = currentPerson.getCoordinates();
-            currentCoordinates.setX(coordinates.getX());
-            currentCoordinates.setY(coordinates.getY());
-            coordinatesRepository.save(currentCoordinates);
-        }
-        if (person.getLocation() != null) {
-            Location location = handleLocation(person.getLocation());
-            person.setLocation(location);
-        }
-        currentPerson.setName(person.getName());
-        currentPerson.setEyeColor(person.getEyeColor());
-        currentPerson.setHairColor(person.getHairColor());
-        currentPerson.setHeight(person.getHeight());
-        currentPerson.setBirthday(person.getBirthday());
-        currentPerson.setWeight(person.getWeight());
-        currentPerson.setNationality(person.getNationality());
-        personRepository.save(currentPerson);
+        Person currentPerson = personService.updatePerson(id, person);
         return ResponseEntity.ok(currentPerson);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletePerson(@PathVariable Integer id) {
-        personRepository.deleteById(id);
+        personService.deletePerson(id);
         return ResponseEntity.ok().build();
     }
 
