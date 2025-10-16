@@ -1,26 +1,33 @@
 import EnumInput from './EnumInput.tsx';
-import type { Color, Country, Person } from '../interfaces.ts';
+import type { Color, Country, Person, ValidationError } from '../interfaces.ts';
+import LabeledInput from './LabeledInput.tsx';
 
 interface PersonInputProps {
   person: Person;
   onChange: (person: Person) => void;
+  validationErrors: ValidationError[];
 }
 
 const colorValues: Color[] = ['BLACK', 'BLUE', 'YELLOW', 'ORANGE', 'WHITE'];
 const countryValues: Country[] = ['RUSSIA', 'SPAIN', 'THAILAND'];
 
-export default function PersonInput({ person, onChange }: PersonInputProps) {
+export default function PersonInput(props: PersonInputProps) {
+  const { person, onChange, validationErrors } = props;
+  const errorRecord: Record<string, string> = {};
+  for (const error of validationErrors) {
+    errorRecord[error.field] = error.defaultMessage;
+  }
   return (<div className='flex-column'>
-    <label>
-      <p className='text'>Name:</p>
+    <LabeledInput label='Name' validationError={errorRecord['name']}>
       <input
         type='text'
         value={person.name}
         onChange={(e) => {
           person.name = e.target.value;
           onChange(person);
-      }}/>
-    </label>
+        }}
+      />
+    </LabeledInput>
     <EnumInput
       label='Eye color'
       possibleValues={colorValues}
@@ -29,6 +36,7 @@ export default function PersonInput({ person, onChange }: PersonInputProps) {
         person.eyeColor = value;
         onChange(person);
       }}
+      validationError={errorRecord['eyeColor']}
     />
     <EnumInput
       label='Hair color'
@@ -38,9 +46,9 @@ export default function PersonInput({ person, onChange }: PersonInputProps) {
         person.hairColor = value;
         onChange(person);
       }}
+      validationError={errorRecord['hairColor']}
     />
-    <label>
-      <p className='text'>Height:</p>
+    <LabeledInput label='Height' validationError={errorRecord['height']}>
       <input
         type='number'
         value={person.height}
@@ -49,9 +57,8 @@ export default function PersonInput({ person, onChange }: PersonInputProps) {
           onChange(person);
         }}
       />
-    </label>
-    <label>
-      <p className='text'>Birthday:</p>
+    </LabeledInput>
+    <LabeledInput label='Birthday' validationError={errorRecord['birthday']}>
       <input
         type='date'
         value={person.birthday.toISOString().split('T')[0]}
@@ -60,9 +67,8 @@ export default function PersonInput({ person, onChange }: PersonInputProps) {
           onChange(person);
         }}
       />
-    </label>
-    <label>
-      <p className='text'>Weight:</p>
+    </LabeledInput>
+    <LabeledInput label='Weight' validationError={errorRecord['weight']}>
       <input
         type='number'
         value={person.weight}
@@ -71,7 +77,7 @@ export default function PersonInput({ person, onChange }: PersonInputProps) {
           onChange(person);
         }}
       />
-    </label>
+    </LabeledInput>
     <EnumInput
       label='Nationality'
       possibleValues={countryValues}
@@ -80,6 +86,7 @@ export default function PersonInput({ person, onChange }: PersonInputProps) {
         person.nationality = value;
         onChange(person);
       }}
+      validationError={errorRecord['nationality']}
     />
   </div>);
 }

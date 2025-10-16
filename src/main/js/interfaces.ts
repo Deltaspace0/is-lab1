@@ -25,3 +25,14 @@ export interface Person {
   weight: number;
   nationality: Country;
 }
+
+export interface ValidationError {
+  defaultMessage: string;
+  field: string;
+  objectName: string;
+}
+
+export interface ErrorResponse {
+  errors: ValidationError[];
+  message: string;
+}

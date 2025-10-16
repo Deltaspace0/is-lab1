@@ -286,3 +286,13 @@ tbody > tr:hover {
   max-height: calc(100vh - 64px);
   border: 2px solid rgb(200, 200, 200);
 }
+
+.error {
+  border: 1px solid #ff4444;
+}
+
+.error-message {
+  color: #ff4444;
+  font-size: 12px;
+  display: block;
+}

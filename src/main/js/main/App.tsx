@@ -1,7 +1,7 @@
 import '../App.css'
 import { useCallback, useEffect, useState } from 'react';
 import Table from '../components/Table.tsx';
-import type { Person } from '../interfaces.ts';
+import type { ErrorResponse, Person, ValidationError } from '../interfaces.ts';
 import PersonInput from '../components/PersonInput.tsx';
 
 type Panel = 'add' | 'edit' | 'table';
@@ -30,6 +30,7 @@ export default function App() {
   const [personList, setPersonList] = useState<Person[]>([]);
   const [editId, setEditId] = useState(0);
   const [editPerson, setEditPerson] = useState<Person>(defaultPerson);
+  const [validationErrors, setValidationErrors] = useState<ValidationError[]>([]);
   const deserializePerson = (person: Person): Person => {
     if (person.creationDate) {
       person.creationDate = new Date(person.creationDate);
@@ -53,13 +54,20 @@ export default function App() {
       setEditPerson(deserializePerson(body));
     })();
   }, [editId]);
+  useEffect(() => setValidationErrors([]), [editPerson]);
   const deletePerson = async () => {
     await fetch(`/person/${editPerson.id}`, { method: 'DELETE' });
     setPanel('table');
     refreshList();
   };
+  const processErrors = (response: ErrorResponse) => {
+    console.log('Error message from the server:', response.message);
+    if (response.errors instanceof Array) {
+      setValidationErrors(response.errors);
+    }
+  };
   const addPerson = async () => {
-    await fetch(`/person`, {
+    const response = await fetch(`/person`, {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -67,11 +75,15 @@ export default function App() {
       },
       body: JSON.stringify(editPerson)
     });
-    setPanel('table');
-    refreshList();
+    if (response.ok) {
+      setPanel('table');
+      refreshList();
+    } else {
+      response.json().then(processErrors);
+    }
   };
   const updatePerson = async () => {
-    await fetch(`/person/${editPerson.id}`, {
+    const response = await fetch(`/person/${editPerson.id}`, {
       method: 'PUT',
       headers: {
         'Accept': 'application/json',
@@ -79,8 +91,12 @@ export default function App() {
       },
       body: JSON.stringify(editPerson)
     });
-    setPanel('table');
-    refreshList();
+    if (response.ok) {
+      setPanel('table');
+      refreshList();
+    } else {
+      response.json().then(processErrors);
+    }
   };
   const handleTableClick = (i: number) => {
     setEditId(personList[i].id);
@@ -92,6 +108,7 @@ export default function App() {
       <PersonInput
         person={editPerson}
         onChange={(person) => setEditPerson({...person})}
+        validationErrors={validationErrors}
       />
       <button onClick={addPerson}>Add</button>
     </fieldset>,
@@ -102,6 +119,7 @@ export default function App() {
         <PersonInput
           person={editPerson}
           onChange={(person) => setEditPerson({...person})}
+          validationErrors={validationErrors}
         />
         <div className='flex-row'>
           <button onClick={updatePerson}>Save</button>
