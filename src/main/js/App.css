@@ -188,16 +188,6 @@ button {
   }
 }
 
-fieldset {
-  width: 100px;
-  height: 100%;
-  margin: 0 32px;
-}
-
-legend {
-  font-size: 12px;
-}
-
 li {
   transition: color 0.3s ease-in-out;
 }

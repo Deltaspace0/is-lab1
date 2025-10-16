@@ -5,6 +5,7 @@ import type { ErrorResponse, Person, ValidationError } from '../interfaces.ts';
 import PersonInput from '../components/PersonInput.tsx';
 
 type Panel = 'add' | 'edit' | 'table';
+
 const defaultPerson: Person = {
   id: 0,
   name: '',
@@ -53,7 +54,7 @@ export default function App() {
       const body: Person = await response.json();
       setEditPerson(deserializePerson(body));
     })();
-  }, [editId]);
+  }, [editId, personList]);
   useEffect(() => setValidationErrors([]), [editPerson]);
   const deletePerson = async () => {
     await fetch(`/person/${editPerson.id}`, { method: 'DELETE' });
@@ -113,8 +114,7 @@ export default function App() {
       <button onClick={addPerson}>Add</button>
     </fieldset>,
     edit: <fieldset style={{width: '250px'}}>
-      <legend>Edit person</legend>
-      <p className='text'>ID: {editId > 0 ? editId : 'None'}</p>
+      <legend>Edit person (ID: {editId > 0 ? editId : 'None'})</legend>
       {editId > 0 && <>
         <PersonInput
           person={editPerson}

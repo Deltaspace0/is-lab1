@@ -16,6 +16,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 
@@ -34,6 +35,7 @@ public class Person {
 
     @OneToOne
     @JoinColumn(nullable = false)
+    @Valid
     private Coordinates coordinates;
 
     @Column(nullable = false)
@@ -48,6 +50,7 @@ public class Person {
 
     @ManyToOne
     @JoinColumn(nullable = false)
+    @Valid
     private Location location;
 
     @Column(nullable = false)

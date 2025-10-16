@@ -29,7 +29,6 @@ export interface Person {
 export interface ValidationError {
   defaultMessage: string;
   field: string;
-  objectName: string;
 }
 
 export interface ErrorResponse {
