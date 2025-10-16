@@ -1,10 +1,15 @@
 label {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   cursor: pointer;
   &:hover {
     color: #0ec3c9;
   }
+}
+
+label > :last-child {
+  width: 60%;
 }
 
 input[type="checkbox"] {
@@ -133,11 +138,31 @@ input[type="range"]:disabled::-webkit-slider-runnable-track {
 input[type="text"] {
   margin: 4px;
   border-radius: 4px;
+  box-sizing: border-box;
+}
+
+input[type="number"] {
+  margin: 4px;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+input[type="date"] {
+  margin: 4px;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+select {
+  margin: 4px;
+  border-radius: 4px;
+  box-sizing: border-box;
 }
 
 button {
   font-size: 12px;
-  width: 180px;
+  width: 100%;
+  height: 32px;
   margin: 4px;
   padding: 2px;
   background: #0f0718;
@@ -164,11 +189,9 @@ button {
 }
 
 fieldset {
-  min-width: 100px;
-  max-width: calc(100vw - 48px);
-  margin: 0 auto;
-  border-top-left-radius: 12px;
-  border-bottom-left-radius: 12px;
+  width: 100px;
+  height: 100%;
+  margin: 0 32px;
 }
 
 legend {
@@ -203,7 +226,9 @@ caption {
 }
 
 thead, tfoot {
-  background-color: rgba(100, 0, 255, 0.2);
+  background-color: rgb(43, 8, 94);
+  position: sticky;
+  top: 0;
 }
 
 th, td {
@@ -212,8 +237,17 @@ th, td {
   text-align: center;
 }
 
+tbody > tr {
+  transition: background-color 0.3s ease-out;
+}
+
 tbody > tr:nth-of-type(even) {
   background-color: rgba(255, 255, 255, 0.2);
+}
+
+tbody > tr:hover {
+  background-color: rgba(255, 255, 255, 0.5);
+  transition: background-color 0s ease-in;
 }
 
 .text {
@@ -227,7 +261,7 @@ tbody > tr:nth-of-type(even) {
   background: radial-gradient(#000000, 50%, #162644);
   min-height: 100vh;
   display: flex;
-  padding: 16px;
+  padding: 0 16px;
   color: white;
 }
 
@@ -242,12 +276,13 @@ tbody > tr:nth-of-type(even) {
 
 .button-table {
   width: 64px;
+  margin: 2px;
 }
 
 .table-div {
   overflow: auto;
   margin: 4px;
-  max-width: calc(100vw - 32px);
-  max-height: calc(100vh - 128px);
+  max-width: calc(100vw - 320px);
+  max-height: calc(100vh - 64px);
   border: 2px solid rgb(200, 200, 200);
 }

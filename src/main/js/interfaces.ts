@@ -1,3 +1,6 @@
+export type Color = 'BLACK' | 'BLUE' | 'YELLOW' | 'ORANGE' | 'WHITE';
+export type Country = 'RUSSIA' | 'SPAIN' | 'THAILAND';
+
 export interface Coordinates {
   x: number;
   y: number;
@@ -13,12 +16,12 @@ export interface Person {
   id: number;
   name: string;
   coordinates: Coordinates;
-  creationDate: string;
-  eyeColor: string;
-  hairColor: string;
+  creationDate?: Date;
+  eyeColor: Color;
+  hairColor: Color;
   location: Location;
   height: number;
-  birthday: string;
+  birthday: Date;
   weight: number;
-  nationality: string;
+  nationality: Country;
 }

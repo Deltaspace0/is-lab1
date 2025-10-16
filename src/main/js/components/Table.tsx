@@ -4,19 +4,18 @@ import type { Person } from '../interfaces.ts';
 
 interface TableProps {
   personList: Person[];
-  onDelete: () => void;
+  onClick: (i: number) => void;
 }
 
-export default function Table({ personList, onDelete }: TableProps) {
+export default function Table({ personList, onClick }: TableProps) {
   const rows: JSX.Element[] = [];
-  for (const person of personList) {
-    rows.push(<Row person={person} onDelete={onDelete}/>);
+  for (let i = 0; i < personList.length; i++) {
+    rows.push(<Row person={personList[i]} onClick={() => onClick(i)}/>);
   }
   return (<div className='table-div'>
     <table>
       <thead>
         <tr>
-          <th scope='col'></th>
           <th scope='col'>ID</th>
           <th scope='col'>Name</th>
           <th scope='col'>Coordinates</th>
