@@ -28,6 +28,10 @@ public class Coordinates {
         return id;
     }
 
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
     public double getX() {
         return x;
     }

@@ -31,19 +31,19 @@ public class PersonController {
 
     @GetMapping
     public List<Person> getPersonList() {
-        return personService.getPersonList();
+        return personService.getList();
     }
 
     @GetMapping("/{id}")
     public Person getPerson(@PathVariable Integer id) {
-        return personService.getPerson(id);
+        return personService.getById(id);
     }
 
     @PostMapping
     public ResponseEntity<Person> addPerson(
         @Valid @RequestBody Person person
     ) throws URISyntaxException {
-        Person savedPerson = personService.addPerson(person);
+        Person savedPerson = personService.add(person);
         URI uri = new URI("/person/"+savedPerson.getId());
         return ResponseEntity.created(uri).body(savedPerson);
     }
@@ -53,13 +53,13 @@ public class PersonController {
         @PathVariable Integer id,
         @Valid @RequestBody Person person
     ) {
-        Person currentPerson = personService.updatePerson(id, person);
+        Person currentPerson = personService.update(id, person);
         return ResponseEntity.ok(currentPerson);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletePerson(@PathVariable Integer id) {
-        personService.deletePerson(id);
+        personService.delete(id);
         return ResponseEntity.ok().build();
     }
 
