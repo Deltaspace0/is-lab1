@@ -105,7 +105,7 @@ export default function App() {
   const handleTableClick = (i: number) => {
     setEditId(personList[i].id);
     setPanel('edit');
-  }
+  };
   const panels = {
     add: <fieldset style={{width: '250px'}}>
       <legend>Add person</legend>
