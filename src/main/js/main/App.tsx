@@ -55,7 +55,11 @@ export default function App() {
     (async () => {
       const response = await fetch(`/person/${editId}`);
       const body: Person = await response.json();
-      setEditPerson(deserializePerson(body));
+      if (body.id) {
+        setEditPerson(deserializePerson(body));
+      } else {
+        setEditId(0);
+      }
     })();
   }, [editId, personList]);
   useEffect(() => setValidationErrors([]), [editPerson]);
