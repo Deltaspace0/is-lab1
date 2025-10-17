@@ -28,29 +28,6 @@ export default function PersonInput(props: PersonInputProps) {
         }}
       />
     </LabeledInput>
-    <fieldset>
-      <legend>Coordinates</legend>
-      <LabeledInput label='X' validationError={errorRecord['coordinates.x']}>
-        <input
-          type='number'
-          value={person.coordinates.x}
-          onChange={(e) => {
-            person.coordinates.x = Number(e.target.value);
-            onChange(person);
-          }}
-        />
-      </LabeledInput>
-      <LabeledInput label='Y' validationError={errorRecord['coordinates.y']}>
-        <input
-          type='number'
-          value={person.coordinates.y}
-          onChange={(e) => {
-            person.coordinates.y = Number(e.target.value);
-            onChange(person);
-          }}
-        />
-      </LabeledInput>
-    </fieldset>
     <EnumInput
       label='Eye color'
       possibleValues={colorValues}
@@ -71,39 +48,6 @@ export default function PersonInput(props: PersonInputProps) {
       }}
       validationError={errorRecord['hairColor']}
     />
-    <fieldset>
-      <legend>Location</legend>
-      <LabeledInput label='Name' validationError={errorRecord['location.name']}>
-        <input
-          type='text'
-          value={person.location.name}
-          onChange={(e) => {
-            person.location.name = e.target.value;
-            onChange(person);
-          }}
-        />
-      </LabeledInput>
-      <LabeledInput label='X' validationError={errorRecord['location.x']}>
-        <input
-          type='number'
-          value={person.location.x}
-          onChange={(e) => {
-            person.location.x = Number(e.target.value);
-            onChange(person);
-          }}
-        />
-      </LabeledInput>
-      <LabeledInput label='Y' validationError={errorRecord['location.y']}>
-        <input
-          type='number'
-          value={person.location.y}
-          onChange={(e) => {
-            person.location.y = Number(e.target.value);
-            onChange(person);
-          }}
-        />
-      </LabeledInput>
-    </fieldset>
     <LabeledInput label='Height' validationError={errorRecord['height']}>
       <input
         type='number'
@@ -144,5 +88,61 @@ export default function PersonInput(props: PersonInputProps) {
       }}
       validationError={errorRecord['nationality']}
     />
+    <fieldset>
+      <legend>Coordinates</legend>
+      <LabeledInput label='X' validationError={errorRecord['coordinates.x']}>
+        <input
+          type='number'
+          value={person.coordinates.x}
+          onChange={(e) => {
+            person.coordinates.x = Number(e.target.value);
+            onChange(person);
+          }}
+        />
+      </LabeledInput>
+      <LabeledInput label='Y' validationError={errorRecord['coordinates.y']}>
+        <input
+          type='number'
+          value={person.coordinates.y}
+          onChange={(e) => {
+            person.coordinates.y = Number(e.target.value);
+            onChange(person);
+          }}
+        />
+      </LabeledInput>
+    </fieldset>
+    <fieldset>
+      <legend>Location</legend>
+      <LabeledInput label='Name' validationError={errorRecord['location.name']}>
+        <input
+          type='text'
+          value={person.location.name}
+          onChange={(e) => {
+            person.location.name = e.target.value;
+            onChange(person);
+          }}
+        />
+      </LabeledInput>
+      <LabeledInput label='X' validationError={errorRecord['location.x']}>
+        <input
+          type='number'
+          value={person.location.x}
+          onChange={(e) => {
+            person.location.x = Number(e.target.value);
+            onChange(person);
+          }}
+        />
+      </LabeledInput>
+      <LabeledInput label='Y' validationError={errorRecord['location.y']}>
+        <input
+          type='number'
+          value={person.location.y}
+          onChange={(e) => {
+            person.location.y = Number(e.target.value);
+            onChange(person);
+          }}
+        />
+      </LabeledInput>
+    </fieldset>
   </div>);
 }

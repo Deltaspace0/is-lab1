@@ -9,7 +9,7 @@ interface LabeledInputProps {
 export default function LabeledInput(props: LabeledInputProps) {
   return (<div>
     <label className={props.validationError ? 'error' : ''}>
-      <p className='text'>{props.label}:</p>
+      <p className='text' style={{marginLeft: 'auto'}}>{props.label}:</p>
       {props.children}
     </label>
     {props.validationError && <span className='error-message'>
