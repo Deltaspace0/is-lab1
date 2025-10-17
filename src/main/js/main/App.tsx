@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from 'react';
 import Table from '../components/Table.tsx';
 import type { ErrorResponse, Person, ValidationError } from '../interfaces.ts';
 import PersonInput from '../components/PersonInput.tsx';
+import PersonIdInput from '../components/PersonIdInput.tsx';
 
 type Panel = 'add' | 'edit' | 'table';
 
@@ -10,12 +11,14 @@ const defaultPerson: Person = {
   id: 0,
   name: '',
   coordinates: {
+    id: 0,
     x: 0,
     y: 0
   },
   eyeColor: 'BLACK',
   hairColor: 'BLACK',
   location: {
+    id: 0,
     name: '',
     x: 0,
     y: 0
@@ -115,6 +118,7 @@ export default function App() {
     </fieldset>,
     edit: <fieldset style={{width: '250px'}}>
       <legend>Edit person (ID: {editId > 0 ? editId : 'None'})</legend>
+      <PersonIdInput onChange={(person) => setEditId(person.id)}/>
       {editId > 0 && <>
         <PersonInput
           person={editPerson}
