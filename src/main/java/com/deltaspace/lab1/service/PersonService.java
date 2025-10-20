@@ -26,6 +26,16 @@ public class PersonService {
         this.locationService = locationService;
     }
 
+    private Person handleHelperObjects(Person person) {
+        Coordinates newCoordinates = person.getCoordinates();
+        Coordinates coordinates = coordinatesService.update(newCoordinates);
+        person.setCoordinates(coordinates);
+        Location newLocation = person.getLocation();
+        Location location = locationService.update(newLocation);
+        person.setLocation(location);
+        return person;
+    }
+
     public List<Person> getList() {
         return personRepository.findAll();
     }
@@ -33,31 +43,20 @@ public class PersonService {
     public Person getById(Integer id) {
         return personRepository
             .findById(id)
-            .orElseThrow(RuntimeException::new);
+            .orElseThrow(() -> new RuntimeException("No person"));
     }
 
     public Person add(Person person) {
         person.setId(null);
-        Coordinates newCoordinates = person.getCoordinates();
-        Coordinates coordinates = coordinatesService.add(newCoordinates);
-        person.setCoordinates(coordinates);
-        Location newLocation = person.getLocation();
-        Location location = locationService.addOrGet(newLocation);
-        person.setLocation(location);
-        return personRepository.save(person);
+        return personRepository.save(handleHelperObjects(person));
     }
 
     public Person update(Integer id, Person person) {
+        if (!personRepository.existsById(id)) {
+            return null;
+        }
         person.setId(id);
-        Person currentPerson = getById(id);
-        Coordinates coordinates = coordinatesService.update(
-            currentPerson.getCoordinates().getId(),
-            person.getCoordinates()
-        );
-        person.setCoordinates(coordinates);
-        Location location = locationService.add(person.getLocation());
-        person.setLocation(location);
-        return personRepository.save(person);
+        return personRepository.save(handleHelperObjects(person));
     }
 
     public void delete(Integer id) {

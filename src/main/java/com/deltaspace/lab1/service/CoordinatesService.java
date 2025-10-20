@@ -1,5 +1,7 @@
 package com.deltaspace.lab1.service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import com.deltaspace.lab1.model.Coordinates;
@@ -14,19 +16,20 @@ public class CoordinatesService {
         this.coordinatesRepository = coordinatesRepository;
     }
 
-    public Coordinates add(Coordinates coordinates) {
-        if (coordinates == null) {
-            return null;
-        }
-        coordinates.setId(null);
-        return coordinatesRepository.save(coordinates);
+    public List<Coordinates> getList() {
+        return coordinatesRepository.findAll();
     }
 
-    public Coordinates update(Integer id, Coordinates coordinates) {
+    public Coordinates getById(Integer id) {
+        return coordinatesRepository
+            .findById(id)
+            .orElseThrow(() -> new RuntimeException("No coordinates"));
+    }
+
+    public Coordinates update(Coordinates coordinates) {
         if (coordinates == null) {
             return null;
         }
-        coordinates.setId(id);
         return coordinatesRepository.save(coordinates);
     }
 

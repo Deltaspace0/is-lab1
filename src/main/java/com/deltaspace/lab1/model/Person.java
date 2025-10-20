@@ -14,7 +14,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
@@ -33,7 +32,7 @@ public class Person {
     @Size(min = 1)
     private String name;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(nullable = false)
     @Valid
     private Coordinates coordinates;

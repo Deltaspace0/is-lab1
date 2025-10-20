@@ -1,5 +1,7 @@
 package com.deltaspace.lab1.service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import com.deltaspace.lab1.model.Location;
@@ -14,29 +16,21 @@ public class LocationService {
         this.locationRepository = locationRepository;
     }
 
+    public List<Location> getList() {
+        return locationRepository.findAll();
+    }
+
     public Location getById(Integer id) {
         return locationRepository
             .findById(id)
             .orElseThrow(() -> new RuntimeException("No location"));
     }
 
-    public Location add(Location location) {
+    public Location update(Location location) {
         if (location == null) {
             return null;
         }
-        location.setId(null);
         return locationRepository.save(location);
-    }
-
-    public Location addOrGet(Location location) {
-        if (location == null) {
-            return null;
-        }
-        Integer id = location.getId();
-        if (id != null && id > 0) {
-            return getById(id);
-        }
-        return add(location);
     }
 
 }
