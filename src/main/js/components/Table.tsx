@@ -1,33 +1,27 @@
 import type { JSX } from 'react';
 import Row from './Row.tsx';
-import type { Person } from '../interfaces.ts';
 
-interface TableProps {
-  personList: Person[];
+interface TableProps<T> {
+  list: T[];
+  getStrings: (elem?: T) => string[];
   onClick: (i: number) => void;
 }
 
-export default function Table({ personList, onClick }: TableProps) {
+export default function Table<T>(props: TableProps<T>) {
+  const headers = props.getStrings();
+  const headerElements: JSX.Element[] = [];
+  for (const header of headers) {
+    headerElements.push(<th scope='col'>{header}</th>);
+  }
   const rows: JSX.Element[] = [];
-  for (let i = 0; i < personList.length; i++) {
-    rows.push(<Row person={personList[i]} onClick={() => onClick(i)}/>);
+  for (let i = 0; i < props.list.length; i++) {
+    const strings = props.getStrings(props.list[i]);
+    rows.push(<Row strings={strings} onClick={() => props.onClick(i)}/>);
   }
   return (<div className='table-div'>
     <table>
       <thead>
-        <tr>
-          <th scope='col'>ID</th>
-          <th scope='col'>Name</th>
-          <th scope='col'>Coordinates</th>
-          <th scope='col'>Creation date</th>
-          <th scope='col'>Eye color</th>
-          <th scope='col'>Hair color</th>
-          <th scope='col'>Location</th>
-          <th scope='col'>Height</th>
-          <th scope='col'>Birthday</th>
-          <th scope='col'>Weight</th>
-          <th scope='col'>Nationality</th>
-        </tr>
+        <tr>{headerElements}</tr>
       </thead>
       <tbody>{rows}</tbody>
     </table>

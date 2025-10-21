@@ -13,6 +13,14 @@ export default defineConfig({
       '/person': {
         target: 'http://localhost:8080',
         changeOrigin: true
+      },
+      '/coordinates': {
+        target: 'http://localhost:8080',
+        changeOrigin: true
+      },
+      '/location': {
+        target: 'http://localhost:8080',
+        changeOrigin: true
       }
     }
   }
