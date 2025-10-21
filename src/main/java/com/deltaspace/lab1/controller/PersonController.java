@@ -38,11 +38,15 @@ public class PersonController {
     @GetMapping
     public List<Person> getPersonList(
         @RequestParam(required = true) Integer pageNumber,
+        @RequestParam(required = false) String nameFilter,
         @RequestParam(required = false) String sortField,
         @RequestParam(required = false) String sortOrder
     ) {
+        if (nameFilter == null) {
+            nameFilter = "";
+        }
         if (sortField == null) {
-            return personService.getList(pageNumber);
+            return personService.getList(pageNumber, nameFilter);
         }
         if ("id".equals(sortField) || "name".equals(sortField) ||
             "creationDate".equals(sortField) || "eyeColor".equals(sortField) ||
@@ -51,7 +55,12 @@ public class PersonController {
             "nationality".equals(sortField)
         ) {
             boolean sorting = "asc".equals(sortOrder);
-            return personService.getList(pageNumber, sortField, sorting);
+            return personService.getList(
+                pageNumber,
+                nameFilter,
+                sortField,
+                sorting
+            );
         }
         throw new RuntimeException("Wrong field: "+sortField);
     }

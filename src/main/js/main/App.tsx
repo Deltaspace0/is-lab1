@@ -152,6 +152,7 @@ export default function App() {
   const [maxPageNumber, setMaxPageNumber] = useState(0);
   const [sortField, setSortField] = useState<Field>('id');
   const [sortOrder, setSortOrder] = useState('asc');
+  const [nameFilter, setNameFilter] = useState('');
   const deserializePerson = (person: Person): Person => {
     if (person.creationDate) {
       person.creationDate = new Date(person.creationDate);
@@ -171,9 +172,10 @@ export default function App() {
     if (sortField === 'None') {
       return fetch(requestPrefix).then((x) => x.json());
     }
-    return fetch(`${requestPrefix}&sortField=${sortField}&sortOrder=${sortOrder}`)
+    return fetch(`${requestPrefix}&sortField=${sortField}`+
+        `&sortOrder=${sortOrder}&nameFilter=${nameFilter}`)
       .then((x) => x.json());
-  }, [pageNumber, sortField, sortOrder]);
+  }, [pageNumber, sortField, sortOrder, nameFilter]);
   const refreshList = useCallback(async () => {
     const bodies = await Promise.all([
       fetchPersonList(),
@@ -343,6 +345,14 @@ export default function App() {
           value={sortOrder}
           onChange={(value) => setSortOrder(value)}
         />
+        <label>
+          <p className='text'>Name filter:</p>
+          <input
+            type='text'
+            value={nameFilter}
+            onChange={(e) => setNameFilter(e.target.value)}
+          />
+        </label>
       </div>
     </>,
     coordinatesTable: <Table

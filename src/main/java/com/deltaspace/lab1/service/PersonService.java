@@ -39,13 +39,17 @@ public class PersonService {
         return person;
     }
 
-    public List<Person> getList(Integer pageNumber) {
+    public List<Person> getList(Integer pageNumber, String nameFilter) {
         Pageable pageable = PageRequest.of(pageNumber, 20);
-        return personRepository.findAll(pageable).getContent();
+        return personRepository.findByNameContaining(
+            nameFilter,
+            pageable
+        ).getContent();
     }
 
     public List<Person> getList(
         Integer pageNumber,
+        String nameFilter,
         String field,
         boolean sorting
     ) {
@@ -53,7 +57,10 @@ public class PersonService {
             ? Sort.by(field).ascending()
             : Sort.by(field).descending();
         Pageable pageable = PageRequest.of(pageNumber, 20, sort);
-        return personRepository.findAll(pageable).getContent();
+        return personRepository.findByNameContaining(
+            nameFilter,
+            pageable
+        ).getContent();
     }
 
     public Long getAmount() {
