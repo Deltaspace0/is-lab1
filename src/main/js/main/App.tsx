@@ -148,7 +148,9 @@ export default function App() {
   const [editId, setEditId] = useState(0);
   const [editPerson, setEditPerson] = useState<Person>(defaultPerson);
   const [validationErrors, setValidationErrors] = useState<ValidationError[]>([]);
-  const [sortField, setSortField] = useState<Field>('None');
+  const [pageNumber, setPageNumber] = useState(0);
+  const [maxPageNumber, setMaxPageNumber] = useState(0);
+  const [sortField, setSortField] = useState<Field>('id');
   const [sortOrder, setSortOrder] = useState('asc');
   const deserializePerson = (person: Person): Person => {
     if (person.creationDate) {
@@ -158,12 +160,20 @@ export default function App() {
     return person;
   };
   const fetchPersonList = useCallback(async () => {
-    if (sortField === 'None') {
-      return fetch('/person').then((x) => x.json());
+    const amount = await fetch('/person/amount').then((x) => x.json());
+    if (typeof amount !== 'number') {
+      return;
     }
-    return fetch(`/person?sortField=${sortField}&sortOrder=${sortOrder}`)
+    const newMaxPageNumber = Math.floor(amount/20);
+    setMaxPageNumber(newMaxPageNumber);
+    const currentPageNumber = Math.min(pageNumber, newMaxPageNumber);
+    const requestPrefix = `/person?pageNumber=${currentPageNumber}`;
+    if (sortField === 'None') {
+      return fetch(requestPrefix).then((x) => x.json());
+    }
+    return fetch(`${requestPrefix}&sortField=${sortField}&sortOrder=${sortOrder}`)
       .then((x) => x.json());
-  }, [sortField, sortOrder]);
+  }, [pageNumber, sortField, sortOrder]);
   const refreshList = useCallback(async () => {
     const bodies = await Promise.all([
       fetchPersonList(),
@@ -309,6 +319,18 @@ export default function App() {
         onClick={handlePersonTableClick}
       />
       <div className='flex-row'>
+        <button
+            onClick={() => setPageNumber(pageNumber-1)}
+            style={{width: '64px'}}
+            disabled={pageNumber === 0}>
+          Prev
+        </button>
+        <button
+            onClick={() => setPageNumber(pageNumber+1)}
+            style={{width: '64px'}}
+            disabled={pageNumber === maxPageNumber}>
+          Next
+        </button>
         <EnumInput
           label='Sort by'
           possibleValues={fieldValues}
@@ -349,17 +371,15 @@ export default function App() {
         <button className='big-button' onClick={handleRandomClick}>
           Add random persons
         </button>
-      </>) : (
-        <button className='big-button' onClick={() => {
-          if (panel === 'add' || panel === 'edit') {
-            setPanel('personTable');
-          } else {
-            setPanel(actionPanel);
-          }
-        }}>
-          Return
-        </button>
-      )}
+      </>) : (<button className='big-button' onClick={() => {
+        if (panel === 'add' || panel === 'edit') {
+          setPanel('personTable');
+        } else {
+          setPanel(actionPanel);
+        }
+      }}>
+        Return
+      </button>)}
     </fieldset>
     <div style={{margin: 'auto'}}>
       {panels[panel]}

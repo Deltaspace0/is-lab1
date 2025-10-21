@@ -2,6 +2,8 @@ package com.deltaspace.lab1.service;
 
 import java.util.List;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -37,15 +39,25 @@ public class PersonService {
         return person;
     }
 
-    public List<Person> getList() {
-        return personRepository.findAll();
+    public List<Person> getList(Integer pageNumber) {
+        Pageable pageable = PageRequest.of(pageNumber, 20);
+        return personRepository.findAll(pageable).getContent();
     }
 
-    public List<Person> getList(String field, boolean sorting) {
-        if (sorting) {
-            return personRepository.findAll(Sort.by(field).ascending());
-        }
-        return personRepository.findAll(Sort.by(field).descending());
+    public List<Person> getList(
+        Integer pageNumber,
+        String field,
+        boolean sorting
+    ) {
+        Sort sort = sorting
+            ? Sort.by(field).ascending()
+            : Sort.by(field).descending();
+        Pageable pageable = PageRequest.of(pageNumber, 20, sort);
+        return personRepository.findAll(pageable).getContent();
+    }
+
+    public Long getAmount() {
+        return personRepository.count();
     }
 
     public Person getById(Integer id) {
