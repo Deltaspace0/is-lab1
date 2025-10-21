@@ -1,5 +1,6 @@
 import EnumInput from './EnumInput.tsx';
-import type { Color, Country, Person, ValidationError } from '../interfaces.ts';
+import { colorValues, countryValues } from '../interfaces.ts';
+import type { Person, ValidationError } from '../interfaces.ts';
 import LabeledInput from './LabeledInput.tsx';
 
 interface PersonInputProps {
@@ -9,9 +10,6 @@ interface PersonInputProps {
   onChange: (person: Person) => void;
   validationErrors: ValidationError[];
 }
-
-const colorValues: Color[] = ['BLACK', 'BLUE', 'YELLOW', 'ORANGE', 'WHITE'];
-const countryValues: Country[] = ['RUSSIA', 'SPAIN', 'THAILAND'];
 
 export default function PersonInput(props: PersonInputProps) {
   const { person, onChange, validationErrors } = props;

@@ -3,8 +3,11 @@ import { useCallback, useEffect, useState } from 'react';
 import Table from '../components/Table.tsx';
 import PersonInput from '../components/PersonInput.tsx';
 import PersonIdInput from '../components/PersonIdInput.tsx';
+import { colorValues, countryValues } from '../interfaces.ts';
 import type {
+  Color,
   Coordinates,
+  Country,
   ErrorResponse,
   Location,
   Person,
@@ -37,6 +40,45 @@ const defaultPerson: Person = {
   weight: 0,
   nationality: 'RUSSIA'
 };
+
+function getRandomString(): string {
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let result = '';
+  for (let i = 0; i < 6; i++) {
+    result += characters.charAt(Math.floor(Math.random()*characters.length));
+  }
+  return result;
+}
+
+function getRandomColor(): Color {
+  return colorValues[Math.floor(Math.random()*colorValues.length)];
+}
+
+function getRandomCountry(): Country {
+  return countryValues[Math.floor(Math.random()*countryValues.length)];
+}
+
+function getRandomPerson(): Person {
+  return {
+    id: 0,
+    name: getRandomString(),
+    coordinates: {
+      x: Math.floor(Math.random()*100-50),
+      y: Math.floor(Math.random()*100-50)
+    },
+    eyeColor: getRandomColor(),
+    hairColor: getRandomColor(),
+    location: {
+      name: getRandomString(),
+      x: Math.floor(Math.random()*100-50),
+      y: Math.floor(Math.random()*100-50)
+    },
+    height: 160+Math.floor(Math.random()*40),
+    birthday: new Date('2000-01-01'),
+    weight: 60+Math.floor(Math.random()*40),
+    nationality: getRandomCountry()
+  };
+}
 
 function getCoordinatesStrings(coordinates?: Coordinates): string[] {
   if (coordinates) {
@@ -209,6 +251,21 @@ export default function App() {
       refreshList();
     }
   };
+  const handleRandomClick = async () => {
+    const promises: Promise<Response>[] = [];
+    for (let i = 0; i < 12; i++) {
+      promises.push(fetch(`/person`, {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(getRandomPerson())
+      }));
+    }
+    await Promise.all(promises);
+    refreshList();
+  };
   const personInputElement = <PersonInput
     person={editPerson}
     onCoordinatesClick={() => setPanel('coordinatesTable')}
@@ -261,6 +318,9 @@ export default function App() {
         </button>
         <button className='big-button' onClick={() => setPanel('edit')}>
           Edit person
+        </button>
+        <button className='big-button' onClick={handleRandomClick}>
+          Add random persons
         </button>
       </>) : (
         <button className='big-button' onClick={() => {

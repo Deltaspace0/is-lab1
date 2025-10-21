@@ -1,6 +1,9 @@
 export type Color = 'BLACK' | 'BLUE' | 'YELLOW' | 'ORANGE' | 'WHITE';
 export type Country = 'RUSSIA' | 'SPAIN' | 'THAILAND';
 
+export const colorValues: Color[] = ['BLACK', 'BLUE', 'YELLOW', 'ORANGE', 'WHITE'];
+export const countryValues: Country[] = ['RUSSIA', 'SPAIN', 'THAILAND'];
+
 export interface Coordinates {
   id?: number;
   x: number;
