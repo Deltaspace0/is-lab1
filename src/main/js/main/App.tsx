@@ -110,7 +110,7 @@ export default function App() {
     }
     person.birthday = new Date(person.birthday);
     return person;
-  }
+  };
   const refreshList = useCallback(async () => {
     const bodies = await Promise.all([
       fetch('/person').then((x) => x.json()),
@@ -256,10 +256,22 @@ export default function App() {
     <fieldset style={{width: '180px', flexShrink: 0, margin: 'auto 0'}}>
       <legend>Menu</legend>
       {panel === 'personTable' ? (<>
-        <button onClick={() => setPanel('add')}>Add person</button>
-        <button onClick={() => setPanel('edit')}>Edit person</button>
+        <button className='big-button' onClick={() => setPanel('add')}>
+          Add person
+        </button>
+        <button className='big-button' onClick={() => setPanel('edit')}>
+          Edit person
+        </button>
       </>) : (
-        <button onClick={() => setPanel('personTable')}>Return</button>
+        <button className='big-button' onClick={() => {
+          if (panel === 'add' || panel === 'edit') {
+            setPanel('personTable');
+          } else {
+            setPanel(actionPanel);
+          }
+        }}>
+          Return
+        </button>
       )}
     </fieldset>
     <div style={{margin: 'auto'}}>
