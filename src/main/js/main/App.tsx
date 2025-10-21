@@ -234,16 +234,19 @@ export default function App() {
       </>}
     </fieldset>,
     personTable: <Table
+      label='Person'
       list={personList}
       getStrings={getPersonStrings}
       onClick={handlePersonTableClick}
     />,
     coordinatesTable: <Table
+      label='Coordinates'
       list={coordinatesList}
       getStrings={getCoordinatesStrings}
       onClick={handleCoordinatesTableClick}
     />,
     locationTable: <Table
+      label='Location'
       list={locationList}
       getStrings={getLocationStrings}
       onClick={handleLocationTableClick}
