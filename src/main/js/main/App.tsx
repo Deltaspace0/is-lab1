@@ -19,6 +19,7 @@ import EnumInput from '../components/EnumInput.tsx';
 type Panel
   = 'add'
   | 'edit'
+  | 'special'
   | 'personTable'
   | 'coordinatesTable'
   | 'locationTable';
@@ -153,6 +154,14 @@ export default function App() {
   const [sortField, setSortField] = useState<Field>('id');
   const [sortOrder, setSortOrder] = useState('asc');
   const [nameFilter, setNameFilter] = useState('');
+  const [sumHeight, setSumHeight] = useState(0);
+  const [lessWeight, setLessWeight] = useState(0);
+  const [amountLessWeight, setAmountLessWeight] = useState(0);
+  const [lessBirthday, setLessBirthday] = useState(new Date('2000-01-01'));
+  const [hairColorToFind, setHairColorToFind] = useState<Color>('BLACK');
+  const [hairColorPercentage, setHairColorPercentage] = useState(0);
+  const [eyeColorToFind, setEyeColorToFind] = useState<Color>('BLACK');
+  const [eyeColorPercentage, setEyeColorPercentage] = useState(0);
   const deserializePerson = (person: Person): Person => {
     if (person.creationDate) {
       person.creationDate = new Date(person.creationDate);
@@ -289,6 +298,41 @@ export default function App() {
     await Promise.all(promises);
     refreshList();
   };
+  const handleSumHeightClick = async () => {
+    const response = await fetch('/person/sumHeight');
+    const body = await response.json();
+    setSumHeight(body);
+  };
+  const handleWeightAmountClick = async () => {
+    const response = await fetch(`/person/weightLess?weight=${lessWeight}`);
+    const body = await response.json();
+    setAmountLessWeight(body);
+  };
+  const handleBirthdayClick = async () => {
+    const response = await fetch(`/person/birthdayLess`, {
+      method: 'PUT',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(lessBirthday)
+    });
+    const body = await response.json();
+    setPersonList(body.map(deserializePerson));
+    setPanel('personTable');
+  };
+  const handleHairClick = async () => {
+    const response = await fetch(`/person/hairColorPercentage?`+
+      `hairColor=${hairColorToFind}`);
+    const body = await response.json();
+    setHairColorPercentage(body);
+  };
+  const handleEyeClick = async () => {
+    const response = await fetch(`/person/eyeColorPercentage?`+
+      `eyeColor=${eyeColorToFind}`);
+    const body = await response.json();
+    setEyeColorPercentage(body);
+  };
   const personInputElement = <PersonInput
     person={editPerson}
     onCoordinatesClick={() => setPanel('coordinatesTable')}
@@ -312,6 +356,51 @@ export default function App() {
           <button onClick={deletePerson}>Delete</button>
         </div>
       </>}
+    </fieldset>,
+    special: <fieldset style={{width: '250px'}}>
+      <legend>Operations</legend>
+      <div className='flex-row'>
+        <button onClick={handleSumHeightClick}>Height sum</button>
+        <p className='text'>{sumHeight}</p>
+      </div>
+      <div className='flex-row'>
+        <input
+          type='number'
+          value={lessWeight}
+          onChange={(e) => setLessWeight(Number(e.target.value))}
+          style={{width: '64px'}}
+        />
+        <button onClick={handleWeightAmountClick}>Amount "less weight"</button>
+        <p className='text'>{amountLessWeight}</p>
+      </div>
+      <div className='flex-row'>
+        <input
+          type='date'
+          value={lessBirthday.toISOString().split('T')[0]}
+          onChange={(e) => setLessBirthday(new Date(e.target.value))}
+        />
+        <button onClick={handleBirthdayClick}>Less birthday</button>
+      </div>
+      <div className='flex-row'>
+        <EnumInput
+          label='Hair color'
+          possibleValues={colorValues}
+          value={hairColorToFind}
+          onChange={(value) => setHairColorToFind(value)}
+        />
+        <button onClick={handleHairClick} style={{width: '32px'}}>Find</button>
+        <p className='text'>{Math.floor(hairColorPercentage*100)/100}%</p>
+      </div>
+      <div className='flex-row'>
+        <EnumInput
+          label='Eye color'
+          possibleValues={colorValues}
+          value={eyeColorToFind}
+          onChange={(value) => setEyeColorToFind(value)}
+        />
+        <button onClick={handleEyeClick} style={{width: '32px'}}>Find</button>
+        <p className='text'>{Math.floor(eyeColorPercentage*100)/100}%</p>
+      </div>
     </fieldset>,
     personTable: <>
       <Table
@@ -378,11 +467,14 @@ export default function App() {
         <button className='big-button' onClick={() => setPanel('edit')}>
           Edit person
         </button>
+        <button className='big-button' onClick={() => setPanel('special')}>
+          Special operations
+        </button>
         <button className='big-button' onClick={handleRandomClick}>
           Add random persons
         </button>
       </>) : (<button className='big-button' onClick={() => {
-        if (panel === 'add' || panel === 'edit') {
+        if (panel === 'add' || panel === 'edit' || panel === 'special') {
           setPanel('personTable');
         } else {
           setPanel(actionPanel);

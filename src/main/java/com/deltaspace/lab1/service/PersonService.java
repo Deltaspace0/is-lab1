@@ -1,5 +1,6 @@
 package com.deltaspace.lab1.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.data.domain.PageRequest;
@@ -7,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import com.deltaspace.lab1.enums.Color;
 import com.deltaspace.lab1.model.Coordinates;
 import com.deltaspace.lab1.model.Location;
 import com.deltaspace.lab1.model.Person;
@@ -65,6 +67,63 @@ public class PersonService {
 
     public Long getAmount() {
         return personRepository.count();
+    }
+
+    public Long getHeightSum() {
+        List<Person> personList = personRepository.findAll();
+        Long heightSum = 0L;
+        for (Person person : personList) {
+            heightSum += person.getHeight();
+        }
+        return heightSum;
+    }
+
+    public Long getAmountLessWeight(Integer weight) {
+        List<Person> personList = personRepository.findAll();
+        Long amount = 0L;
+        for (Person person : personList) {
+            if (person.getWeight() < weight) {
+                amount++;
+            }
+        }
+        return amount;
+    }
+
+    public List<Person> getListLessBirthday(java.time.ZonedDateTime birthday) {
+        List<Person> allPersonList = personRepository.findAll();
+        List<Person> personList = new ArrayList<Person>();
+        for (Person person : allPersonList) {
+            if (person.getBirthday().isBefore(birthday)) {
+                personList.add(person);
+            }
+        }
+        return personList;
+    }
+
+    public Double getHairColorPercentage(Color hairColor) {
+        List<Person> personList = personRepository.findAll();
+        Double colorAmount = 0d;
+        Double amount = 0d; 
+        for (Person person : personList) {
+            if (person.getHairColor() == hairColor) {
+                colorAmount++;
+            }
+            amount++;
+        }
+        return colorAmount*100/amount;
+    }
+
+    public Double getEyeColorPercentage(Color eyeColor) {
+        List<Person> personList = personRepository.findAll();
+        Double colorAmount = 0d;
+        Double amount = 0d; 
+        for (Person person : personList) {
+            if (person.getEyeColor() == eyeColor) {
+                colorAmount++;
+            }
+            amount++;
+        }
+        return colorAmount*100/amount;
     }
 
     public Person getById(Integer id) {

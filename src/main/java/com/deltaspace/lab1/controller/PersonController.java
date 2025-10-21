@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.deltaspace.lab1.enums.Color;
 import com.deltaspace.lab1.model.Person;
 import com.deltaspace.lab1.service.PersonService;
 
@@ -33,6 +34,39 @@ public class PersonController {
     @GetMapping("/amount")
     public Long getAmount() {
         return personService.getAmount();
+    }
+
+    @GetMapping("/sumHeight")
+    public Long getHeightSum() {
+        return personService.getHeightSum();
+    }
+
+    @GetMapping("/weightLess")
+    public Long getAmountLessWeight(
+        @RequestParam(required = true) Integer weight
+    ) {
+        return personService.getAmountLessWeight(weight);
+    }
+
+    @PutMapping("/birthdayLess")
+    public List<Person> getListLessBirthday(
+        @RequestBody java.time.ZonedDateTime birthday
+    ) {
+        return personService.getListLessBirthday(birthday);
+    }
+
+    @GetMapping("/hairColorPercentage")
+    public Double getHairColorPercentage(
+        @RequestParam(required = true) Color hairColor
+    ) {
+        return personService.getHairColorPercentage(hairColor);
+    }
+
+    @GetMapping("/eyeColorPercentage")
+    public Double getEyeColorPercentage(
+        @RequestParam(required = true) Color eyeColor
+    ) {
+        return personService.getEyeColorPercentage(eyeColor);
     }
 
     @GetMapping
