@@ -3,16 +3,18 @@ import { useCallback, useEffect, useState } from 'react';
 import Table from '../components/Table.tsx';
 import PersonInput from '../components/PersonInput.tsx';
 import PersonIdInput from '../components/PersonIdInput.tsx';
-import { colorValues, countryValues } from '../interfaces.ts';
+import { colorValues, countryValues, fieldValues } from '../interfaces.ts';
 import type {
   Color,
   Coordinates,
   Country,
   ErrorResponse,
+  Field,
   Location,
   Person,
   ValidationError
 } from '../interfaces.ts';
+import EnumInput from '../components/EnumInput.tsx';
 
 type Panel
   = 'add'
@@ -146,6 +148,8 @@ export default function App() {
   const [editId, setEditId] = useState(0);
   const [editPerson, setEditPerson] = useState<Person>(defaultPerson);
   const [validationErrors, setValidationErrors] = useState<ValidationError[]>([]);
+  const [sortField, setSortField] = useState<Field>('None');
+  const [sortOrder, setSortOrder] = useState('asc');
   const deserializePerson = (person: Person): Person => {
     if (person.creationDate) {
       person.creationDate = new Date(person.creationDate);
@@ -153,16 +157,23 @@ export default function App() {
     person.birthday = new Date(person.birthday);
     return person;
   };
+  const fetchPersonList = useCallback(async () => {
+    if (sortField === 'None') {
+      return fetch('/person').then((x) => x.json());
+    }
+    return fetch(`/person?sortField=${sortField}&sortOrder=${sortOrder}`)
+      .then((x) => x.json());
+  }, [sortField, sortOrder]);
   const refreshList = useCallback(async () => {
     const bodies = await Promise.all([
-      fetch('/person').then((x) => x.json()),
+      fetchPersonList(),
       fetch('/coordinates').then((x) => x.json()),
       fetch('/location').then((x) => x.json()),
     ]);
     setPersonList(bodies[0].map(deserializePerson));
     setCoordinatesList(bodies[1]);
     setLocationList(bodies[2]);
-  }, []);
+  }, [fetchPersonList]);
   useEffect(() => {
     if (panel === 'add' || panel === 'edit') {
       setActionPanel(panel);
@@ -290,12 +301,28 @@ export default function App() {
         </div>
       </>}
     </fieldset>,
-    personTable: <Table
-      label='Person'
-      list={personList}
-      getStrings={getPersonStrings}
-      onClick={handlePersonTableClick}
-    />,
+    personTable: <>
+      <Table
+        label='Person'
+        list={personList}
+        getStrings={getPersonStrings}
+        onClick={handlePersonTableClick}
+      />
+      <div className='flex-row'>
+        <EnumInput
+          label='Sort by'
+          possibleValues={fieldValues}
+          value={sortField}
+          onChange={(value) => setSortField(value)}
+        />
+        <EnumInput
+          label='Sort order'
+          possibleValues={['asc', 'desc']}
+          value={sortOrder}
+          onChange={(value) => setSortOrder(value)}
+        />
+      </div>
+    </>,
     coordinatesTable: <Table
       label='Coordinates'
       list={coordinatesList}

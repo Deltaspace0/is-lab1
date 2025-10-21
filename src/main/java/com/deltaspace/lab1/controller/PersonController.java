@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.deltaspace.lab1.model.Person;
@@ -30,8 +31,22 @@ public class PersonController {
     }
 
     @GetMapping
-    public List<Person> getPersonList() {
-        return personService.getList();
+    public List<Person> getPersonList(
+        @RequestParam(required = false) String sortField,
+        @RequestParam(required = false) String sortOrder
+    ) {
+        if (sortField == null) {
+            return personService.getList();
+        }
+        if ("id".equals(sortField) || "name".equals(sortField) ||
+            "creationDate".equals(sortField) || "eyeColor".equals(sortField) ||
+            "hairColor".equals(sortField) || "height".equals(sortField) ||
+            "birthday".equals(sortField) || "weight".equals(sortField) ||
+            "nationality".equals(sortField)
+        ) {
+            return personService.getList(sortField, "asc".equals(sortOrder));
+        }
+        throw new RuntimeException("Wrong field: "+sortField);
     }
 
     @GetMapping("/{id}")

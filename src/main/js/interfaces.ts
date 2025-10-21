@@ -1,8 +1,31 @@
 export type Color = 'BLACK' | 'BLUE' | 'YELLOW' | 'ORANGE' | 'WHITE';
 export type Country = 'RUSSIA' | 'SPAIN' | 'THAILAND';
+export type Field
+  = 'None'
+  | 'id'
+  | 'name'
+  | 'creationDate'
+  | 'eyeColor'
+  | 'hairColor'
+  | 'height'
+  | 'birthday'
+  | 'weight'
+  | 'nationality';
 
 export const colorValues: Color[] = ['BLACK', 'BLUE', 'YELLOW', 'ORANGE', 'WHITE'];
 export const countryValues: Country[] = ['RUSSIA', 'SPAIN', 'THAILAND'];
+export const fieldValues: Field[] = [
+  'None',
+  'id',
+  'name',
+  'creationDate',
+  'eyeColor',
+  'hairColor',
+  'height',
+  'birthday',
+  'weight',
+  'nationality'
+];
 
 export interface Coordinates {
   id?: number;

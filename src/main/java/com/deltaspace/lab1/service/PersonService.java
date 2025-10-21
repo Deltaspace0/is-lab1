@@ -2,6 +2,7 @@ package com.deltaspace.lab1.service;
 
 import java.util.List;
 
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.deltaspace.lab1.model.Coordinates;
@@ -38,6 +39,13 @@ public class PersonService {
 
     public List<Person> getList() {
         return personRepository.findAll();
+    }
+
+    public List<Person> getList(String field, boolean sorting) {
+        if (sorting) {
+            return personRepository.findAll(Sort.by(field).ascending());
+        }
+        return personRepository.findAll(Sort.by(field).descending());
     }
 
     public Person getById(Integer id) {

@@ -278,7 +278,7 @@ tbody > tr:hover {
   overflow: auto;
   margin: 4px;
   max-width: calc(100vw - 320px);
-  max-height: calc(100vh - 64px);
+  max-height: calc(100vh - 120px);
   border: 2px solid rgb(200, 200, 200);
 }
 
