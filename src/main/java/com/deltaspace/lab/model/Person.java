@@ -1,10 +1,10 @@
-package com.deltaspace.lab1.model;
+package com.deltaspace.lab.model;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import com.deltaspace.lab1.enums.Color;
-import com.deltaspace.lab1.enums.Country;
+import com.deltaspace.lab.enums.Color;
+import com.deltaspace.lab.enums.Country;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

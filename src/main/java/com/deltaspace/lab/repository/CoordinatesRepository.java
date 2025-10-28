@@ -1,8 +1,8 @@
-package com.deltaspace.lab1.repository;
+package com.deltaspace.lab.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.deltaspace.lab1.model.Coordinates;
+import com.deltaspace.lab.model.Coordinates;
 
 public interface CoordinatesRepository extends JpaRepository<Coordinates, Integer> {
 }

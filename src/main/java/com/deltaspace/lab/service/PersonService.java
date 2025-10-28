@@ -1,4 +1,4 @@
-package com.deltaspace.lab1.service;
+package com.deltaspace.lab.service;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,11 +9,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import com.deltaspace.lab1.enums.Color;
-import com.deltaspace.lab1.model.Coordinates;
-import com.deltaspace.lab1.model.Location;
-import com.deltaspace.lab1.model.Person;
-import com.deltaspace.lab1.repository.PersonRepository;
+import com.deltaspace.lab.enums.Color;
+import com.deltaspace.lab.model.Coordinates;
+import com.deltaspace.lab.model.Location;
+import com.deltaspace.lab.model.Person;
+import com.deltaspace.lab.repository.PersonRepository;
 
 @Service
 public class PersonService {

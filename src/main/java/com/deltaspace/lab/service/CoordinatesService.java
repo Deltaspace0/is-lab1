@@ -1,11 +1,11 @@
-package com.deltaspace.lab1.service;
+package com.deltaspace.lab.service;
 
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.deltaspace.lab1.model.Coordinates;
-import com.deltaspace.lab1.repository.CoordinatesRepository;
+import com.deltaspace.lab.model.Coordinates;
+import com.deltaspace.lab.repository.CoordinatesRepository;
 
 @Service
 public class CoordinatesService {

@@ -1,4 +1,4 @@
-package com.deltaspace.lab1.config;
+package com.deltaspace.lab.config;
 
 import java.util.HashMap;
 import java.util.Map;

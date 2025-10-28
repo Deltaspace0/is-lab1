@@ -1,11 +1,11 @@
-package com.deltaspace.lab1.service;
+package com.deltaspace.lab.service;
 
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.deltaspace.lab1.model.Location;
-import com.deltaspace.lab1.repository.LocationRepository;
+import com.deltaspace.lab.model.Location;
+import com.deltaspace.lab.repository.LocationRepository;
 
 @Service
 public class LocationService {

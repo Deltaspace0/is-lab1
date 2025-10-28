@@ -1,4 +1,4 @@
-package com.deltaspace.lab1.enums;
+package com.deltaspace.lab.enums;
 
 public enum Country {
     RUSSIA,

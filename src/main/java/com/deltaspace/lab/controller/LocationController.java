@@ -1,4 +1,4 @@
-package com.deltaspace.lab1.controller;
+package com.deltaspace.lab.controller;
 
 import java.util.List;
 
@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.deltaspace.lab1.model.Location;
-import com.deltaspace.lab1.service.LocationService;
+import com.deltaspace.lab.model.Location;
+import com.deltaspace.lab.service.LocationService;
 
 @RestController
 @RequestMapping("/location")

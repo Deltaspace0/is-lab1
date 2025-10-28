@@ -1,4 +1,4 @@
-package com.deltaspace.lab1.model;
+package com.deltaspace.lab.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -6,21 +6,23 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.DecimalMax;
+import jakarta.validation.constraints.DecimalMin;
 
 @Entity
-@Table(name = "location")
-public class Location {
+@Table(name = "coordinates")
+public class Coordinates {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(nullable = false)
-    private Float x;
-    private int y;
+    @DecimalMin(value = "-860", inclusive = false)
+    private double x;
 
     @Column(nullable = false)
-    private String name;
+    @DecimalMax(value = "396")
+    private Float y;
 
     public Integer getId() {
         return id;
@@ -30,28 +32,20 @@ public class Location {
         this.id = id;
     }
 
-    public Float getX() {
+    public double getX() {
         return x;
     }
 
-    public void setX(Float x) {
+    public void setX(double x) {
         this.x = x;
     }
 
-    public int getY() {
+    public Float getY() {
         return y;
     }
 
-    public void setY(int y) {
+    public void setY(Float y) {
         this.y = y;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
 }

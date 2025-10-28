@@ -1,4 +1,4 @@
-package com.deltaspace.lab1.controller;
+package com.deltaspace.lab.controller;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -16,9 +16,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.deltaspace.lab1.enums.Color;
-import com.deltaspace.lab1.model.Person;
-import com.deltaspace.lab1.service.PersonService;
+import com.deltaspace.lab.enums.Color;
+import com.deltaspace.lab.model.Person;
+import com.deltaspace.lab.service.PersonService;
 
 import jakarta.validation.Valid;
 

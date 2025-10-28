@@ -1,13 +1,13 @@
-package com.deltaspace.lab1;
+package com.deltaspace.lab;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class Lab1Application {
+public class LabApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(Lab1Application.class, args);
+        SpringApplication.run(LabApplication.class, args);
     }
 
 }

@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.deltaspace</groupId>
-	<artifactId>lab1</artifactId>
+	<artifactId>lab</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>lab1</name>
-	<description>Laboratory work 1 for the &quot;Information systems&quot; course</description>
+	<name>lab</name>
+	<description>Laboratory work for the &quot;Information systems&quot; course</description>
 	<url/>
 	<licenses>
 		<license/>
