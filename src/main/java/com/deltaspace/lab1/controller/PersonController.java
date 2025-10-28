@@ -71,7 +71,7 @@ public class PersonController {
     }
 
     @GetMapping
-    public List<Person> getPersonList(
+    public ResponseEntity<List<Person>> getPersonList(
         @RequestParam(required = true) Integer pageNumber,
         @RequestParam(required = false) String nameFilter,
         @RequestParam(required = false) String sortField,
@@ -81,7 +81,8 @@ public class PersonController {
             nameFilter = "";
         }
         if (sortField == null) {
-            return personService.getList(pageNumber, nameFilter);
+            List<Person> list = personService.getList(pageNumber, nameFilter);
+            return ResponseEntity.ok(list);
         }
         if ("id".equals(sortField) || "name".equals(sortField) ||
             "creationDate".equals(sortField) || "eyeColor".equals(sortField) ||
@@ -90,14 +91,15 @@ public class PersonController {
             "nationality".equals(sortField)
         ) {
             boolean sorting = "asc".equals(sortOrder);
-            return personService.getList(
+            List<Person> list = personService.getList(
                 pageNumber,
                 nameFilter,
                 sortField,
                 sorting
             );
+            return ResponseEntity.ok(list);
         }
-        throw new RuntimeException("Wrong field: "+sortField);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
     }
 
     @GetMapping("/{id}")
