@@ -2,6 +2,8 @@ package com.deltaspace.lab1.controller;
 
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,8 +28,13 @@ public class LocationController {
     }
 
     @GetMapping("/{id}")
-    public Location getLocation(@PathVariable Integer id) {
-        return locationService.getById(id);
+    public ResponseEntity<Location> getLocation(@PathVariable Integer id) {
+        try {
+            Location location = locationService.getById(id);
+            return ResponseEntity.ok(location);
+        } catch (RuntimeException exception) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
     }
 
 }
