@@ -11,8 +11,8 @@ export default function PersonIdInput({ onChange }: PersonIdInputProps) {
   const [errorMessage, setErrorMessage] = useState('');
   const findPerson = async () => {
     const response = await fetch(`/person/${currentId}`);
-    const body = await response.json();
-    if (body.id) {
+    if (response.ok) {
+      const body = await response.json();
       onChange(body);
     } else {
       setErrorMessage('Does not exist');

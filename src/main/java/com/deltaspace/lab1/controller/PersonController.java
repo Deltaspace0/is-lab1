@@ -4,6 +4,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -100,8 +101,13 @@ public class PersonController {
     }
 
     @GetMapping("/{id}")
-    public Person getPerson(@PathVariable Integer id) {
-        return personService.getById(id);
+    public ResponseEntity<Person> getPerson(@PathVariable Integer id) {
+        try {
+            Person person = personService.getById(id);
+            return ResponseEntity.ok(person);
+        } catch (RuntimeException exception) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
     }
 
     @PostMapping
