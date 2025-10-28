@@ -73,6 +73,7 @@ public class PersonController {
     @GetMapping
     public ResponseEntity<List<Person>> getPersonList(
         @RequestParam(required = true) Integer pageNumber,
+        @RequestParam(required = true) Integer pageSize,
         @RequestParam(required = false) String nameFilter,
         @RequestParam(required = false) String sortField,
         @RequestParam(required = false) String sortOrder
@@ -81,13 +82,18 @@ public class PersonController {
             nameFilter = "";
         }
         if (sortField == null) {
-            List<Person> list = personService.getList(pageNumber, nameFilter);
+            List<Person> list = personService.getList(
+                pageNumber,
+                pageSize,
+                nameFilter
+            );
             return ResponseEntity.ok(list);
         }
         try {
             boolean sorting = "asc".equals(sortOrder);
             List<Person> list = personService.getList(
                 pageNumber,
+                pageSize,
                 nameFilter,
                 sortField,
                 sorting

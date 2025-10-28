@@ -246,7 +246,7 @@ tbody > tr:hover {
 }
 
 .text {
-  margin: 1px;
+  margin: auto 1px;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;

@@ -150,6 +150,7 @@ export default function App() {
   const [editPerson, setEditPerson] = useState<Person>(defaultPerson);
   const [validationErrors, setValidationErrors] = useState<ValidationError[]>([]);
   const [pageNumber, setPageNumber] = useState(0);
+  const [pageSize, setPageSize] = useState(20);
   const [maxPageNumber, setMaxPageNumber] = useState(0);
   const [sortField, setSortField] = useState<Field>('id');
   const [sortOrder, setSortOrder] = useState('asc');
@@ -174,17 +175,19 @@ export default function App() {
     if (typeof amount !== 'number') {
       return;
     }
-    const newMaxPageNumber = Math.floor(amount/20);
+    const newMaxPageNumber = Math.floor(amount/pageSize);
     setMaxPageNumber(newMaxPageNumber);
     const currentPageNumber = Math.min(pageNumber, newMaxPageNumber);
-    const requestPrefix = `/person?pageNumber=${currentPageNumber}`;
+    setPageNumber(currentPageNumber);
+    const requestPrefix = `/person?pageNumber=${currentPageNumber}`+
+      `&pageSize=${pageSize}`;
     if (sortField === 'None') {
       return fetch(requestPrefix).then((x) => x.json());
     }
     return fetch(`${requestPrefix}&sortField=${sortField}`+
         `&sortOrder=${sortOrder}&nameFilter=${nameFilter}`)
       .then((x) => x.json());
-  }, [pageNumber, sortField, sortOrder, nameFilter]);
+  }, [pageNumber, pageSize, sortField, sortOrder, nameFilter]);
   const refreshList = useCallback(async () => {
     const bodies = await Promise.all([
       fetchPersonList(),
@@ -410,12 +413,19 @@ export default function App() {
         onClick={handlePersonTableClick}
       />
       <div className='flex-row'>
+        <EnumInput
+          label='Page size'
+          possibleValues={['5', '10', '20']}
+          value={pageSize.toString()}
+          onChange={(value) => setPageSize(Number(value))}
+        />
         <button
             onClick={() => setPageNumber(pageNumber-1)}
             style={{width: '64px'}}
             disabled={pageNumber === 0}>
           Prev
         </button>
+        <p className='text'>{pageNumber+1}/{maxPageNumber+1}</p>
         <button
             onClick={() => setPageNumber(pageNumber+1)}
             style={{width: '64px'}}

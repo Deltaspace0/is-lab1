@@ -46,8 +46,12 @@ public class PersonService {
         return person;
     }
 
-    public List<Person> getList(Integer pageNumber, String nameFilter) {
-        Pageable pageable = PageRequest.of(pageNumber, 20);
+    public List<Person> getList(
+        Integer pageNumber,
+        Integer pageSize,
+        String nameFilter
+    ) {
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
         return personRepository.findByNameContaining(
             nameFilter,
             pageable
@@ -56,6 +60,7 @@ public class PersonService {
 
     public List<Person> getList(
         Integer pageNumber,
+        Integer pageSize,
         String nameFilter,
         String field,
         boolean sorting
@@ -66,7 +71,7 @@ public class PersonService {
         Sort sort = sorting
             ? Sort.by(field).ascending()
             : Sort.by(field).descending();
-        Pageable pageable = PageRequest.of(pageNumber, 20, sort);
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
         return personRepository.findByNameContaining(
             nameFilter,
             pageable
