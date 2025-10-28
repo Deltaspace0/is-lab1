@@ -84,12 +84,7 @@ public class PersonController {
             List<Person> list = personService.getList(pageNumber, nameFilter);
             return ResponseEntity.ok(list);
         }
-        if ("id".equals(sortField) || "name".equals(sortField) ||
-            "creationDate".equals(sortField) || "eyeColor".equals(sortField) ||
-            "hairColor".equals(sortField) || "height".equals(sortField) ||
-            "birthday".equals(sortField) || "weight".equals(sortField) ||
-            "nationality".equals(sortField)
-        ) {
+        try {
             boolean sorting = "asc".equals(sortOrder);
             List<Person> list = personService.getList(
                 pageNumber,
@@ -98,8 +93,9 @@ public class PersonController {
                 sorting
             );
             return ResponseEntity.ok(list);
+        } catch (RuntimeException exception) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
     }
 
     @GetMapping("/{id}")

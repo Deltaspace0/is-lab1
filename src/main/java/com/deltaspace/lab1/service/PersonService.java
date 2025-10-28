@@ -2,6 +2,7 @@ package com.deltaspace.lab1.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -20,6 +21,10 @@ public class PersonService {
     private final PersonRepository personRepository;
     private final CoordinatesService coordinatesService;
     private final LocationService locationService;
+    private static final Set<String> ALLOWED_SORT_FIELDS = Set.of(
+        "id", "name", "creationDate", "eyeColor", "hairColor", 
+        "height", "birthday", "weight", "nationality"
+    );
 
     public PersonService(
         PersonRepository personRepository,
@@ -55,6 +60,9 @@ public class PersonService {
         String field,
         boolean sorting
     ) {
+        if (!ALLOWED_SORT_FIELDS.contains(field)) {
+            throw new RuntimeException("Wrong field: "+field);
+        }
         Sort sort = sorting
             ? Sort.by(field).ascending()
             : Sort.by(field).descending();
