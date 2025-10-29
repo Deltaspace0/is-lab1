@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.deltaspace.lab.model.Coordinates;
@@ -22,9 +23,17 @@ public class CoordinatesController {
         this.coordinatesService = coordinatesService;
     }
 
+    @GetMapping("/amount")
+    public Long getAmount() {
+        return coordinatesService.getAmount();
+    }
+
     @GetMapping
-    public List<Coordinates> getCoordinatesList() {
-        return coordinatesService.getList();
+    public List<Coordinates> getCoordinatesList(
+        @RequestParam(required = true) Integer pageNumber,
+        @RequestParam(required = true) Integer pageSize
+    ) {
+        return coordinatesService.getList(pageNumber, pageSize);
     }
 
     @GetMapping("/{id}")

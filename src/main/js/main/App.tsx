@@ -149,9 +149,6 @@ export default function App() {
   const [editId, setEditId] = useState(0);
   const [editPerson, setEditPerson] = useState<Person>(defaultPerson);
   const [validationErrors, setValidationErrors] = useState<ValidationError[]>([]);
-  const [pageNumber, setPageNumber] = useState(0);
-  const [pageSize, setPageSize] = useState(20);
-  const [maxPageNumber, setMaxPageNumber] = useState(0);
   const [sortField, setSortField] = useState<Field>('id');
   const [sortOrder, setSortOrder] = useState('asc');
   const [nameFilter, setNameFilter] = useState('');
@@ -163,47 +160,21 @@ export default function App() {
   const [hairColorPercentage, setHairColorPercentage] = useState(0);
   const [eyeColorToFind, setEyeColorToFind] = useState<Color>('BLACK');
   const [eyeColorPercentage, setEyeColorPercentage] = useState(0);
-  const deserializePerson = (person: Person): Person => {
+  const [personRerender, setPersonRerender] = useState(false);
+  const deserializePerson = useCallback((person: Person): Person => {
     if (person.creationDate) {
       person.creationDate = new Date(person.creationDate);
     }
     person.birthday = new Date(person.birthday);
     return person;
-  };
-  const fetchPersonList = useCallback(async () => {
-    const amount = await fetch('/person/amount').then((x) => x.json());
-    if (typeof amount !== 'number') {
-      return;
-    }
-    const newMaxPageNumber = Math.floor(amount/pageSize);
-    setMaxPageNumber(newMaxPageNumber);
-    const currentPageNumber = Math.min(pageNumber, newMaxPageNumber);
-    setPageNumber(currentPageNumber);
-    const requestPrefix = `/person?pageNumber=${currentPageNumber}`+
-      `&pageSize=${pageSize}`;
-    if (sortField === 'None') {
-      return fetch(requestPrefix).then((x) => x.json());
-    }
-    return fetch(`${requestPrefix}&sortField=${sortField}`+
-        `&sortOrder=${sortOrder}&nameFilter=${nameFilter}`)
-      .then((x) => x.json());
-  }, [pageNumber, pageSize, sortField, sortOrder, nameFilter]);
-  const refreshList = useCallback(async () => {
-    const bodies = await Promise.all([
-      fetchPersonList(),
-      fetch('/coordinates').then((x) => x.json()),
-      fetch('/location').then((x) => x.json()),
-    ]);
-    setPersonList(bodies[0].map(deserializePerson));
-    setCoordinatesList(bodies[1]);
-    setLocationList(bodies[2]);
-  }, [fetchPersonList]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [personRerender]);
+  const fetchPersons = () => setPersonRerender((value) => !value);
   useEffect(() => {
     if (panel === 'add' || panel === 'edit') {
       setActionPanel(panel);
     }
   }, [panel]);
-  useEffect(() => void refreshList(), [refreshList]);
   useEffect(() => {
     if (editId <= 0) {
       return;
@@ -217,12 +188,11 @@ export default function App() {
         setEditId(0);
       }
     })();
-  }, [editId, personList]);
+  }, [deserializePerson, editId, personList]);
   useEffect(() => setValidationErrors([]), [editPerson]);
   const deletePerson = async () => {
     await fetch(`/person/${editPerson.id}`, { method: 'DELETE' });
     setPanel('personTable');
-    refreshList();
   };
   const processErrors = (response: ErrorResponse) => {
     console.log('Error message from the server:', response.message);
@@ -241,7 +211,6 @@ export default function App() {
     });
     if (response.ok) {
       setPanel('personTable');
-      refreshList();
     } else {
       response.json().then(processErrors);
     }
@@ -257,7 +226,6 @@ export default function App() {
     });
     if (response.ok) {
       setPanel('personTable');
-      refreshList();
     } else {
       response.json().then(processErrors);
     }
@@ -272,8 +240,6 @@ export default function App() {
     if (body.id) {
       editPerson.coordinates = body;
       setPanel(actionPanel);
-    } else {
-      refreshList();
     }
   };
   const handleLocationTableClick = async (i: number) => {
@@ -282,8 +248,6 @@ export default function App() {
     if (body.id) {
       editPerson.location = body;
       setPanel(actionPanel);
-    } else {
-      refreshList();
     }
   };
   const handleRandomClick = async () => {
@@ -299,7 +263,7 @@ export default function App() {
       }));
     }
     await Promise.all(promises);
-    refreshList();
+    fetchPersons();
   };
   const handleSumHeightClick = async () => {
     const response = await fetch('/person/sumHeight');
@@ -409,29 +373,18 @@ export default function App() {
       <Table
         label='Person'
         list={personList}
+        setList={setPersonList}
+        endpoint='/person'
+        deserialize={deserializePerson}
+        optionalParams={sortField === 'None'
+          ? `&nameFilter=${nameFilter}`
+          : `&sortField=${sortField}&sortOrder=${sortOrder}`+
+            `&nameFilter=${nameFilter}`
+        }
         getStrings={getPersonStrings}
         onClick={handlePersonTableClick}
       />
       <div className='flex-row'>
-        <EnumInput
-          label='Page size'
-          possibleValues={['5', '10', '20']}
-          value={pageSize.toString()}
-          onChange={(value) => setPageSize(Number(value))}
-        />
-        <button
-            onClick={() => setPageNumber(pageNumber-1)}
-            style={{width: '64px'}}
-            disabled={pageNumber === 0}>
-          Prev
-        </button>
-        <p className='text'>{pageNumber+1}/{maxPageNumber+1}</p>
-        <button
-            onClick={() => setPageNumber(pageNumber+1)}
-            style={{width: '64px'}}
-            disabled={pageNumber === maxPageNumber}>
-          Next
-        </button>
         <EnumInput
           label='Sort by'
           possibleValues={fieldValues}
@@ -457,12 +410,16 @@ export default function App() {
     coordinatesTable: <Table
       label='Coordinates'
       list={coordinatesList}
+      setList={setCoordinatesList}
+      endpoint='/coordinates'
       getStrings={getCoordinatesStrings}
       onClick={handleCoordinatesTableClick}
     />,
     locationTable: <Table
       label='Location'
       list={locationList}
+      setList={setLocationList}
+      endpoint='/location'
       getStrings={getLocationStrings}
       onClick={handleLocationTableClick}
     />
