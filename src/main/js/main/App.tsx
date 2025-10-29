@@ -63,6 +63,8 @@ function getRandomCountry(): Country {
 }
 
 function getRandomPerson(): Person {
+  const startDate = new Date('2000-01-01');
+  const endDate = new Date('2008-01-01');
   return {
     id: 0,
     name: getRandomString(),
@@ -78,7 +80,7 @@ function getRandomPerson(): Person {
       y: Math.floor(Math.random()*100-50)
     },
     height: 160+Math.floor(Math.random()*40),
-    birthday: new Date('2000-01-01'),
+    birthday: new Date(+startDate+Math.random()*(+endDate-(+startDate))),
     weight: 60+Math.floor(Math.random()*40),
     nationality: getRandomCountry()
   };
