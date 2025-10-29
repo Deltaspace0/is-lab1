@@ -19,7 +19,8 @@ export default function Table<T>(props: TableProps<T>) {
   const [maxPageNumber, setMaxPageNumber] = useState(0);
   const { setList, endpoint, deserialize, optionalParams } = props;
   const fetchList = useCallback(async () => {
-    const amountResponse = await fetch(`${endpoint}/amount`);
+    const params = optionalParams || '';
+    const amountResponse = await fetch(`${endpoint}/amount?${params}`);
     const amount = await amountResponse.json();
     if (typeof amount !== 'number') {
       return;
@@ -29,7 +30,7 @@ export default function Table<T>(props: TableProps<T>) {
     const currentPageNumber = Math.min(pageNumber, newMaxPageNumber);
     setPageNumber(currentPageNumber);
     const request = `${endpoint}?pageNumber=${currentPageNumber}`+
-      `&pageSize=${pageSize}${optionalParams || ''}`;
+      `&pageSize=${pageSize}${params}`;
     const body = await fetch(request).then((x) => x.json());
     const list = deserialize ? body.map(deserialize) : body;
     setList(list);

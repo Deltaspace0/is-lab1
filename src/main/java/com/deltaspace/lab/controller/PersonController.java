@@ -33,7 +33,12 @@ public class PersonController {
     }
 
     @GetMapping("/amount")
-    public Long getAmount() {
+    public Long getAmount(
+        @RequestParam(required = false) String nameFilter
+    ) {
+        if (nameFilter != null) {
+            return personService.getAmount(nameFilter);
+        }
         return personService.getAmount();
     }
 

@@ -82,6 +82,10 @@ public class PersonService {
         return personRepository.count();
     }
 
+    public Long getAmount(String nameFilter) {
+        return (long)personRepository.findByNameContaining(nameFilter).size();
+    }
+
     public Long getHeightSum() {
         List<Person> personList = personRepository.findAll();
         Long heightSum = 0L;
