@@ -136,6 +136,12 @@ public class PersonController {
         return ResponseEntity.ok(currentPerson);
     }
 
+    @DeleteMapping
+    public ResponseEntity<Void> deleteAll() {
+        personService.deleteAll();
+        return ResponseEntity.ok().build();
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletePerson(@PathVariable Integer id) {
         personService.delete(id);

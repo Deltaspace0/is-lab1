@@ -165,6 +165,12 @@ public class PersonService {
         return personRepository.save(handleHelperObjects(person));
     }
 
+    public void deleteAll() {
+        personRepository.deleteAll();
+        coordinatesService.deleteAll();
+        locationService.deleteAll();
+    }
+
     public void delete(Integer id) {
         personRepository.deleteById(id);
     }

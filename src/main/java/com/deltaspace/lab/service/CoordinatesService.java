@@ -40,4 +40,8 @@ public class CoordinatesService {
         return coordinatesRepository.save(coordinates);
     }
 
+    public void deleteAll() {
+        coordinatesRepository.deleteAll();
+    }
+
 }

@@ -40,4 +40,8 @@ public class LocationService {
         return locationRepository.save(location);
     }
 
+    public void deleteAll() {
+        locationRepository.deleteAll();
+    }
+
 }

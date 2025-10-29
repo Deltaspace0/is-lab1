@@ -265,6 +265,10 @@ export default function App() {
     await Promise.all(promises);
     fetchPersons();
   };
+  const handleDeleteAllClick = async () => {
+    await fetch(`/person`, { method: 'DELETE' });
+    fetchPersons();
+  };
   const handleSumHeightClick = async () => {
     const response = await fetch('/person/sumHeight');
     const body = await response.json();
@@ -439,6 +443,9 @@ export default function App() {
         </button>
         <button className='big-button' onClick={handleRandomClick}>
           Add random persons
+        </button>
+        <button className='big-button' onClick={handleDeleteAllClick}>
+          Delete all objects
         </button>
       </>) : (<button className='big-button' onClick={() => {
         if (panel === 'add' || panel === 'edit' || panel === 'special') {
