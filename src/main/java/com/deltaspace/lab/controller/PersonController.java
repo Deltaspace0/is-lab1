@@ -95,13 +95,12 @@ public class PersonController {
             return ResponseEntity.ok(list);
         }
         try {
-            boolean sorting = "asc".equals(sortOrder);
             List<Person> list = personService.getList(
                 pageNumber,
                 pageSize,
                 nameFilter,
                 sortField,
-                sorting
+                sortOrder
             );
             return ResponseEntity.ok(list);
         } catch (RuntimeException exception) {

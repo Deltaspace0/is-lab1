@@ -63,12 +63,15 @@ public class PersonService {
         Integer pageSize,
         String nameFilter,
         String field,
-        boolean sorting
+        String sortOrder
     ) {
         if (!ALLOWED_SORT_FIELDS.contains(field)) {
             throw new RuntimeException("Wrong field: "+field);
         }
-        Sort sort = sorting
+        if (!"desc".equals(sortOrder) && !"asc".equals(sortOrder)) {
+            throw new RuntimeException("Wrong sort order: "+field);
+        }
+        Sort sort = "asc".equals(sortOrder)
             ? Sort.by(field).ascending()
             : Sort.by(field).descending();
         Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
