@@ -489,9 +489,10 @@ export default function App() {
         <button className='big-button' onClick={handleRandomClick}>
           Add random persons
         </button>
-        <button className='big-button' onClick={handleDeleteAllClick}>
-          Delete all objects
-        </button>
+        {loggedUsername === 'admin' &&
+          <button className='big-button' onClick={handleDeleteAllClick}>
+            Delete all objects
+          </button>}
       </>) : (<button className='big-button' onClick={() => {
         if (panel === 'add' || panel === 'edit' || panel === 'special') {
           setPanel('personTable');
