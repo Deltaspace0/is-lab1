@@ -15,6 +15,7 @@ import type {
   ValidationError
 } from '../interfaces.ts';
 import EnumInput from '../components/EnumInput.tsx';
+import LabeledInput from '../components/LabeledInput.tsx';
 
 type Panel
   = 'add'
@@ -141,6 +142,8 @@ function getPersonStrings(person?: Person): string[] {
 }
 
 export default function App() {
+  const [username, setUsername] = useState('');
+  const [loggedUsername, setLoggedUsername] = useState('');
   const [panel, setPanel] = useState<Panel>('personTable');
   const [actionPanel, setActionPanel] = useState<Panel>('add');
   const [personList, setPersonList] = useState<Person[]>([]);
@@ -170,6 +173,19 @@ export default function App() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [personRerender]);
   const fetchPersons = () => setPersonRerender((value) => !value);
+  useEffect(() => {
+    setUsername(loggedUsername);
+  }, [loggedUsername]);
+  useEffect(() => {
+    (async () => {
+      const result = await cookieStore.get('uname');
+      if (!result) {
+        await loginUser('user');
+      } else {
+        setLoggedUsername(result.value || '');
+      }
+    })();
+  }, []);
   useEffect(() => {
     if (panel === 'add' || panel === 'edit') {
       setActionPanel(panel);
@@ -249,6 +265,17 @@ export default function App() {
       editPerson.location = body;
       setPanel(actionPanel);
     }
+  };
+  const loginUser = async (newUsername: string) => {
+    await fetch('/login', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: newUsername
+    });
+    setLoggedUsername(newUsername);
   };
   const handleRandomClick = async () => {
     const promises: Promise<Response>[] = [];
@@ -430,8 +457,26 @@ export default function App() {
   };
   return (<div className='App'>
     <fieldset style={{width: '180px', flexShrink: 0, margin: 'auto 0'}}>
-      <legend>Menu</legend>
+      <legend>Menu (User: "{loggedUsername}")</legend>
       {panel === 'personTable' ? (<>
+        <LabeledInput label='User'>
+          <input
+            type='text'
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            onKeyDown={(e: React.KeyboardEvent) => {
+              if (e.key === 'Enter') {
+                loginUser(username);
+                e.preventDefault();
+              }
+            }}
+            style={{width: '100%'}}
+          />
+          <button onClick={() => loginUser(username)} style={{
+            width: '64px',
+            height: '24px'
+          }}>Login</button>
+        </LabeledInput>
         <button className='big-button' onClick={() => setPanel('add')}>
           Add person
         </button>

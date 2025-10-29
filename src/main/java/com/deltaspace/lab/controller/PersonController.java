@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -137,9 +138,14 @@ public class PersonController {
     }
 
     @DeleteMapping
-    public ResponseEntity<Void> deleteAll() {
-        personService.deleteAll();
-        return ResponseEntity.ok().build();
+    public ResponseEntity<Void> deleteAll(
+        @CookieValue("uname") String userCookie
+    ) {
+        if ("admin".equals(userCookie)) {
+            personService.deleteAll();
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
     }
 
     @DeleteMapping("/{id}")
