@@ -281,16 +281,20 @@ export default function App() {
   };
   const handleRandomClick = async () => {
     const promises: Promise<Response>[] = [];
+    const randomPersons: Person[] = [];
     for (let i = 0; i < 12; i++) {
+      const person = getRandomPerson();
+      randomPersons.push(person);
       promises.push(fetch(`/person`, {
         method: 'POST',
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(getRandomPerson())
+        body: JSON.stringify(person)
       }));
     }
+    console.log(JSON.stringify(randomPersons, null, 2));
     await Promise.all(promises);
     fetchPersons();
   };
