@@ -47,7 +47,7 @@ export default function Table<T>(props: TableProps<T>) {
     if (typeof amount !== 'number') {
       return;
     }
-    const newMaxPageNumber = Math.floor(amount/pageSize);
+    const newMaxPageNumber = Math.max(0, Math.ceil(amount/pageSize)-1);
     setMaxPageNumber(newMaxPageNumber);
     const currentPageNumber = Math.min(pageNumber, newMaxPageNumber);
     setPageNumber(currentPageNumber);
