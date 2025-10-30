@@ -13,6 +13,7 @@ import type {
   Field,
   Location,
   Person,
+  ImportData,
   ValidationError
 } from '../interfaces.ts';
 import {
@@ -20,7 +21,8 @@ import {
   getRandomPerson,
   getPersonStrings,
   getCoordinatesStrings,
-  getLocationStrings
+  getLocationStrings,
+  getImportStrings
 } from '../util.ts';
 
 type Panel
@@ -60,6 +62,7 @@ export default function App() {
   const [personList, setPersonList] = useState<Person[]>([]);
   const [coordinatesList, setCoordinatesList] = useState<Coordinates[]>([]);
   const [locationList, setLocationList] = useState<Location[]>([]);
+  const [importList, setImportList] = useState<ImportData[]>([]);
   const [editId, setEditId] = useState(0);
   const [editPerson, setEditPerson] = useState<Person>(defaultPerson);
   const [valErrors, setValErrors] = useState<ValidationError[]>([]);
@@ -245,8 +248,14 @@ export default function App() {
       </>}
     </fieldset>,
     special: <Special/>,
-    history: <>
-    </>,
+    history: <Table
+      label='Import history'
+      list={importList}
+      setList={setImportList}
+      endpoint='/import'
+      getStrings={getImportStrings}
+      onClick={() => {}}
+    />,
     personTable: <>
       <Table
         label='Person'

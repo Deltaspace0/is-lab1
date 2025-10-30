@@ -54,6 +54,13 @@ export interface Person {
   nationality: Country;
 }
 
+export interface ImportData {
+  id: number;
+  status: boolean;
+  username: string;
+  count?: number;
+}
+
 export interface ValidationError {
   defaultMessage: string;
   field: string;

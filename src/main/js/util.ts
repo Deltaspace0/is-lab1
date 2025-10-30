@@ -4,7 +4,8 @@ import type {
   Coordinates,
   Country,
   Location,
-  Person
+  Person,
+  ImportData
 } from './interfaces.ts';
 
 export function getRandomString(): string {
@@ -103,6 +104,18 @@ export function getPersonStrings(person?: Person): string[] {
     'Weight',
     'Nationality'
   ];
+}
+
+export function getImportStrings(importData?: ImportData): string[] {
+  if (importData) {
+    return [
+      importData.id.toString(),
+      importData.status ? 'Success' : 'Fail',
+      importData.username,
+      importData.count?.toString() || '-'
+    ];
+  }
+  return ['ID', 'Status', 'Username', 'Count'];
 }
 
 export function deserializePerson(person: Person): Person {
