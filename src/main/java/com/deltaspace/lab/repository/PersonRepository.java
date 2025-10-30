@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.deltaspace.lab.model.Person;
 
 public interface PersonRepository extends JpaRepository<Person, Integer> {
+    boolean existsByNameAndIdNot(String name, Integer id);
     List<Person> findByNameContaining(String name);
     Page<Person> findByNameContaining(String name, Pageable pageable);
 }

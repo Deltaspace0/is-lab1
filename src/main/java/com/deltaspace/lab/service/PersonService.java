@@ -15,12 +15,15 @@ import com.deltaspace.lab.model.Location;
 import com.deltaspace.lab.model.Person;
 import com.deltaspace.lab.repository.PersonRepository;
 
+import jakarta.validation.Validator;
+
 @Service
 public class PersonService {
 
     private final PersonRepository personRepository;
     private final CoordinatesService coordinatesService;
     private final LocationService locationService;
+    private final Validator validator;
     private static final Set<String> ALLOWED_SORT_FIELDS = Set.of(
         "id", "name", "creationDate", "eyeColor", "hairColor", 
         "height", "birthday", "weight", "nationality"
@@ -29,11 +32,13 @@ public class PersonService {
     public PersonService(
         PersonRepository personRepository,
         CoordinatesService coordinatesService,
-        LocationService locationService
+        LocationService locationService,
+        Validator validator
     ) {
         this.personRepository = personRepository;
         this.coordinatesService = coordinatesService;
         this.locationService = locationService;
+        this.validator = validator;
     }
 
     private Person handleHelperObjects(Person person) {
@@ -44,6 +49,18 @@ public class PersonService {
         Location location = locationService.update(newLocation);
         person.setLocation(location);
         return person;
+    }
+
+    public boolean isValid(Person person) {
+        if (locationService.hasDuplicateName(person.getLocation())) {
+            return false;
+        }
+        Integer id = person.getId();
+        String name = person.getName();
+        if (personRepository.existsByNameAndIdNot(name, id)) {
+            return false;
+        }
+        return validator.validate(person).isEmpty();
     }
 
     public List<Person> getList(
@@ -154,10 +171,16 @@ public class PersonService {
 
     public Person add(Person person) {
         person.setId(null);
+        if (!isValid(person)) {
+            throw new RuntimeException("Invalid person");
+        }
         return personRepository.save(handleHelperObjects(person));
     }
 
     public Person update(Integer id, Person person) {
+        if (!isValid(person)) {
+            throw new RuntimeException("Invalid person");
+        }
         if (!personRepository.existsById(id)) {
             return null;
         }

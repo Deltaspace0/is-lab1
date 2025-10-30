@@ -18,6 +18,12 @@ public class LocationService {
         this.locationRepository = locationRepository;
     }
 
+    public boolean hasDuplicateName(Location location) {
+        Integer id = location.getId();
+        String name = location.getName();
+        return locationRepository.existsByNameAndIdNot(name, id);
+    }
+
     public List<Location> getList(Integer pageNumber, Integer pageSize) {
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
         return locationRepository.findAll(pageable).getContent();

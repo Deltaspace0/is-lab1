@@ -14,27 +14,18 @@ import com.deltaspace.lab.repository.ImportRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
-import jakarta.validation.Validator;
-
 @Service
 public class ImportService {
 
     private final ImportRepository importRepository;
     private final PersonService personService;
-    private final Validator validator;
 
     public ImportService(
         ImportRepository importRepository,
-        PersonService personService,
-        Validator validator
+        PersonService personService
     ) {
         this.importRepository = importRepository;
         this.personService = personService;
-        this.validator = validator;
-    }
-
-    private boolean isValid(Person person) {
-        return validator.validate(person).isEmpty();
     }
 
     public Integer processFile(
@@ -47,7 +38,7 @@ public class ImportService {
             mapper.registerModule(new JavaTimeModule());
             Person[] persons = mapper.readValue(json, Person[].class);
             for (Person person : persons) {
-                if (!isValid(person)) {
+                if (!personService.isValid(person)) {
                     throw new RuntimeException("Invalid person");
                 }
             }
