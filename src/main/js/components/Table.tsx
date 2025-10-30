@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState, type JSX } from 'react';
+import { useCallback, useEffect, useMemo, useState, type JSX } from 'react';
 import EnumInput from './EnumInput.tsx';
 import Row from './Row.tsx';
 
@@ -9,6 +9,8 @@ interface TableProps<T> {
   endpoint: string;
   deserialize?: (elem: T) => T;
   optionalParams?: string;
+  disablePagination?: boolean;
+  requestBody?: object;
   getStrings: (elem?: T) => string[];
   onClick: (i: number) => void;
 }
@@ -17,9 +19,29 @@ export default function Table<T>(props: TableProps<T>) {
   const [pageNumber, setPageNumber] = useState(0);
   const [pageSize, setPageSize] = useState(20);
   const [maxPageNumber, setMaxPageNumber] = useState(0);
-  const { setList, endpoint, deserialize, optionalParams } = props;
-  const fetchList = useCallback(async () => {
-    const params = optionalParams || '';
+  const {
+    setList,
+    endpoint,
+    deserialize,
+    optionalParams,
+    disablePagination,
+    requestBody
+  } = props;
+  const params = useMemo(() => optionalParams || '', [optionalParams]);
+  const fetchBody = useCallback(async (request: string) => {
+    if (requestBody) {
+      return fetch(request, {
+        method: 'PUT',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(requestBody)
+      }).then((x) => x.json());
+    }
+    return fetch(request).then((x) => x.json());
+  }, [requestBody]);
+  const fetchPageList = useCallback(async () => {
     const amountResponse = await fetch(`${endpoint}/amount?${params}`);
     const amount = await amountResponse.json();
     if (typeof amount !== 'number') {
@@ -31,13 +53,19 @@ export default function Table<T>(props: TableProps<T>) {
     setPageNumber(currentPageNumber);
     const request = `${endpoint}?pageNumber=${currentPageNumber}`+
       `&pageSize=${pageSize}${params}`;
-    const body = await fetch(request).then((x) => x.json());
+    return fetchBody(request);
+  }, [fetchBody, pageNumber, pageSize, endpoint, params]);
+  const fetchList = useCallback(async () => {
+    return fetchBody(`${endpoint}?${params}`);
+  }, [fetchBody, endpoint, params]);
+  const updateList = useCallback(async () => {
+    const body = await (disablePagination ? fetchList() : fetchPageList());
     const list = deserialize ? body.map(deserialize) : body;
     setList(list);
-  }, [pageNumber, pageSize, setList, endpoint, deserialize, optionalParams]);
+  }, [fetchPageList, fetchList, deserialize, setList, disablePagination]);
   useEffect(() => {
-    fetchList();
-  }, [fetchList]);
+    updateList();
+  }, [updateList]);
   const headers = props.getStrings();
   const headerElements: JSX.Element[] = [];
   for (const header of headers) {
@@ -58,7 +86,7 @@ export default function Table<T>(props: TableProps<T>) {
         <tbody>{rows}</tbody>
       </table>
     </div>
-    <div className='flex-row'>
+    {!props.disablePagination && <div className='flex-row'>
       <EnumInput
         label='Page size'
         possibleValues={['5', '10', '20']}
@@ -78,6 +106,6 @@ export default function Table<T>(props: TableProps<T>) {
           disabled={pageNumber === maxPageNumber}>
         Next
       </button>
-    </div>
+    </div>}
   </>);
 }
