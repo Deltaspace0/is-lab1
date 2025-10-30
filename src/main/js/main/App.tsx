@@ -154,6 +154,7 @@ export default function App() {
   const [editId, setEditId] = useState(0);
   const [editPerson, setEditPerson] = useState<Person>(defaultPerson);
   const [validationErrors, setValidationErrors] = useState<ValidationError[]>([]);
+  const [selectedFile, setSelectedFile] = useState<null | File>(null);
   const [sortField, setSortField] = useState<Field>('id');
   const [sortOrder, setSortOrder] = useState('asc');
   const [nameFilter, setNameFilter] = useState('');
@@ -300,6 +301,18 @@ export default function App() {
   };
   const handleDeleteAllClick = async () => {
     await fetch(`/person`, { method: 'DELETE' });
+    fetchPersons();
+  };
+  const handleUploadFile = async () => {
+    if (!selectedFile) {
+      return;
+    }
+    const formData = new FormData();
+    formData.append('file', selectedFile);
+    await fetch(`/person/uploadFile`, {
+      method: 'POST',
+      body: formData
+    });
     fetchPersons();
   };
   const handleSumHeightClick = async () => {
@@ -462,7 +475,7 @@ export default function App() {
     />
   };
   return (<div className='App'>
-    <fieldset style={{width: '180px', flexShrink: 0, margin: 'auto 0'}}>
+    <fieldset style={{width: '240px', flexShrink: 0, margin: 'auto 0'}}>
       <legend>Menu (User: "{loggedUsername}")</legend>
       {panel === 'personTable' ? (<>
         <LabeledInput label='User'>
@@ -483,6 +496,26 @@ export default function App() {
             height: '24px'
           }}>Login</button>
         </LabeledInput>
+        <div className='flex-row'>
+          <input
+            type='file'
+            onChange={(e) => {
+              if (e.target.files) {
+                setSelectedFile(e.target.files[0] || null);
+              }
+            }}
+            style={{width: '100%', margin: 'auto'}}
+          />
+          <button
+              onClick={handleUploadFile}
+              disabled={selectedFile === null}
+              style={{
+                width: '64px',
+                height: '24px'
+              }}>
+            Upload
+          </button>
+        </div>
         <button className='big-button' onClick={() => setPanel('add')}>
           Add person
         </button>

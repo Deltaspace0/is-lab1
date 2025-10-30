@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.deltaspace.lab.enums.Color;
 import com.deltaspace.lab.model.Person;
@@ -115,6 +116,16 @@ public class PersonController {
             Person person = personService.getById(id);
             return ResponseEntity.ok(person);
         } catch (RuntimeException exception) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+    }
+
+    @PostMapping("/uploadFile")
+    public ResponseEntity<Void> uploadFile(@RequestBody MultipartFile file) {
+        try {
+            personService.processFile(file);
+            return ResponseEntity.ok().build();
+        } catch (Exception exception) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
     }

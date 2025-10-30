@@ -1,5 +1,7 @@
 package com.deltaspace.lab.service;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -8,12 +10,15 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.deltaspace.lab.enums.Color;
 import com.deltaspace.lab.model.Coordinates;
 import com.deltaspace.lab.model.Location;
 import com.deltaspace.lab.model.Person;
 import com.deltaspace.lab.repository.PersonRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 @Service
 public class PersonService {
@@ -150,6 +155,16 @@ public class PersonService {
         return personRepository
             .findById(id)
             .orElseThrow(() -> new RuntimeException("No person"));
+    }
+
+    public void processFile(MultipartFile file) throws IOException {
+        String jsonContent = new String(file.getBytes(), StandardCharsets.UTF_8);
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+        Person[] persons = mapper.readValue(jsonContent, Person[].class);
+        for (Person person : persons) {
+            add(person);
+        }
     }
 
     public Person add(Person person) {
