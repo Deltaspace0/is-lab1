@@ -154,7 +154,7 @@ export default function App() {
   const [editId, setEditId] = useState(0);
   const [editPerson, setEditPerson] = useState<Person>(defaultPerson);
   const [validationErrors, setValidationErrors] = useState<ValidationError[]>([]);
-  const [fileError, setFileError] = useState('');
+  const [fileStatus, setFileStatus] = useState('');
   const [selectedFile, setSelectedFile] = useState<null | File>(null);
   const [sortField, setSortField] = useState<Field>('id');
   const [sortOrder, setSortOrder] = useState('asc');
@@ -308,13 +308,19 @@ export default function App() {
     if (!selectedFile) {
       return;
     }
+    setFileStatus('');
     const formData = new FormData();
     formData.append('file', selectedFile);
     const response = await fetch(`/person/uploadFile`, {
       method: 'POST',
       body: formData
     });
-    setFileError(response.ok ? '' : 'There was an error');
+    if (response.ok) {
+      const count = await response.json();
+      setFileStatus(`Created ${count} objects`);
+    } else {
+      setFileStatus('There was an error');
+    }
     fetchPersons();
   };
   const handleSumHeightClick = async () => {
@@ -498,7 +504,7 @@ export default function App() {
             height: '24px'
           }}>Login</button>
         </LabeledInput>
-        <LabeledInput validationError={fileError}>
+        <LabeledInput validationError={fileStatus}>
           <input
             type='file'
             onChange={(e) => {

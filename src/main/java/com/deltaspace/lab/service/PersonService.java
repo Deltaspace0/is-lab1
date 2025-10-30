@@ -157,7 +157,7 @@ public class PersonService {
             .orElseThrow(() -> new RuntimeException("No person"));
     }
 
-    public void processFile(MultipartFile file) throws IOException {
+    public Integer processFile(MultipartFile file) throws IOException {
         String jsonContent = new String(file.getBytes(), StandardCharsets.UTF_8);
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
@@ -165,6 +165,7 @@ public class PersonService {
         for (Person person : persons) {
             add(person);
         }
+        return persons.length;
     }
 
     public Person add(Person person) {

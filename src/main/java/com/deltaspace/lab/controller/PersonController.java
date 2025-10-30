@@ -121,10 +121,12 @@ public class PersonController {
     }
 
     @PostMapping("/uploadFile")
-    public ResponseEntity<Void> uploadFile(@RequestBody MultipartFile file) {
+    public ResponseEntity<Integer> uploadFile(
+        @RequestBody MultipartFile file
+    ) {
         try {
-            personService.processFile(file);
-            return ResponseEntity.ok().build();
+            Integer count = personService.processFile(file);
+            return ResponseEntity.ok().body(count);
         } catch (Exception exception) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
