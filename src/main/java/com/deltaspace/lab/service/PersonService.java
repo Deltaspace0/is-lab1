@@ -20,12 +20,15 @@ import com.deltaspace.lab.repository.PersonRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
+import jakarta.validation.Validator;
+
 @Service
 public class PersonService {
 
     private final PersonRepository personRepository;
     private final CoordinatesService coordinatesService;
     private final LocationService locationService;
+    private final Validator validator;
     private static final Set<String> ALLOWED_SORT_FIELDS = Set.of(
         "id", "name", "creationDate", "eyeColor", "hairColor", 
         "height", "birthday", "weight", "nationality"
@@ -34,11 +37,13 @@ public class PersonService {
     public PersonService(
         PersonRepository personRepository,
         CoordinatesService coordinatesService,
-        LocationService locationService
+        LocationService locationService,
+        Validator validator
     ) {
         this.personRepository = personRepository;
         this.coordinatesService = coordinatesService;
         this.locationService = locationService;
+        this.validator = validator;
     }
 
     private Person handleHelperObjects(Person person) {
@@ -49,6 +54,10 @@ public class PersonService {
         Location location = locationService.update(newLocation);
         person.setLocation(location);
         return person;
+    }
+
+    private boolean isValid(Person person) {
+        return validator.validate(person).isEmpty();
     }
 
     public List<Person> getList(
@@ -162,6 +171,11 @@ public class PersonService {
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
         Person[] persons = mapper.readValue(jsonContent, Person[].class);
+        for (Person person : persons) {
+            if (!isValid(person)) {
+                throw new RuntimeException("Invalid person");
+            }
+        }
         for (Person person : persons) {
             add(person);
         }
