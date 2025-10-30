@@ -154,6 +154,7 @@ export default function App() {
   const [editId, setEditId] = useState(0);
   const [editPerson, setEditPerson] = useState<Person>(defaultPerson);
   const [validationErrors, setValidationErrors] = useState<ValidationError[]>([]);
+  const [fileError, setFileError] = useState('');
   const [selectedFile, setSelectedFile] = useState<null | File>(null);
   const [sortField, setSortField] = useState<Field>('id');
   const [sortOrder, setSortOrder] = useState('asc');
@@ -309,10 +310,11 @@ export default function App() {
     }
     const formData = new FormData();
     formData.append('file', selectedFile);
-    await fetch(`/person/uploadFile`, {
+    const response = await fetch(`/person/uploadFile`, {
       method: 'POST',
       body: formData
     });
+    setFileError(response.ok ? '' : 'There was an error');
     fetchPersons();
   };
   const handleSumHeightClick = async () => {
@@ -496,7 +498,7 @@ export default function App() {
             height: '24px'
           }}>Login</button>
         </LabeledInput>
-        <div className='flex-row'>
+        <LabeledInput validationError={fileError}>
           <input
             type='file'
             onChange={(e) => {
@@ -515,7 +517,7 @@ export default function App() {
               }}>
             Upload
           </button>
-        </div>
+        </LabeledInput>
         <button className='big-button' onClick={() => setPanel('add')}>
           Add person
         </button>
