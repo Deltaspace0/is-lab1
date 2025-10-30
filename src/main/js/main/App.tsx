@@ -27,6 +27,7 @@ type Panel
   = 'add'
   | 'edit'
   | 'special'
+  | 'history'
   | 'personTable'
   | 'coordinatesTable'
   | 'locationTable';
@@ -72,7 +73,7 @@ export default function App() {
     return deserializePerson(person);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [personRerender]);
-  const fetchPersons = () => setPersonRerender((value) => !value);
+  const refreshPersons = () => setPersonRerender((value) => !value);
   useEffect(() => {
     setUsername(loggedUsername);
   }, [loggedUsername]);
@@ -194,11 +195,11 @@ export default function App() {
     }
     console.log(JSON.stringify(randomPersons, null, 2));
     await Promise.all(promises);
-    fetchPersons();
+    refreshPersons();
   };
   const handleDeleteAllClick = async () => {
     await fetch(`/person`, { method: 'DELETE' });
-    fetchPersons();
+    refreshPersons();
   };
   const handleUploadFile = async () => {
     if (!selectedFile) {
@@ -207,7 +208,7 @@ export default function App() {
     setFileStatus('');
     const formData = new FormData();
     formData.append('file', selectedFile);
-    const response = await fetch(`/person/uploadFile`, {
+    const response = await fetch(`/import`, {
       method: 'POST',
       body: formData
     });
@@ -217,7 +218,7 @@ export default function App() {
     } else {
       setFileStatus('There was an error');
     }
-    fetchPersons();
+    refreshPersons();
   };
   const personInputElement = <PersonInput
     person={editPerson}
@@ -244,6 +245,8 @@ export default function App() {
       </>}
     </fieldset>,
     special: <Special/>,
+    history: <>
+    </>,
     personTable: <>
       <Table
         label='Person'
@@ -350,6 +353,9 @@ export default function App() {
         <button className='big-button' onClick={() => setPanel('special')}>
           Special operations
         </button>
+        <button className='big-button' onClick={() => setPanel('history')}>
+          Import history
+        </button>
         <button className='big-button' onClick={handleRandomClick}>
           Add random persons
         </button>
@@ -358,10 +364,10 @@ export default function App() {
             Delete all objects
           </button>}
       </>) : (<button className='big-button' onClick={() => {
-        if (panel === 'add' || panel === 'edit' || panel === 'special') {
-          setPanel('personTable');
-        } else {
+        if (panel === 'coordinatesTable' || panel === 'locationTable') {
           setPanel(actionPanel);
+        } else {
+          setPanel('personTable');
         }
       }}>
         Return

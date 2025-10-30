@@ -1,7 +1,5 @@
 package com.deltaspace.lab.service;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -10,17 +8,12 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.deltaspace.lab.enums.Color;
 import com.deltaspace.lab.model.Coordinates;
 import com.deltaspace.lab.model.Location;
 import com.deltaspace.lab.model.Person;
 import com.deltaspace.lab.repository.PersonRepository;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-
-import jakarta.validation.Validator;
 
 @Service
 public class PersonService {
@@ -28,7 +21,6 @@ public class PersonService {
     private final PersonRepository personRepository;
     private final CoordinatesService coordinatesService;
     private final LocationService locationService;
-    private final Validator validator;
     private static final Set<String> ALLOWED_SORT_FIELDS = Set.of(
         "id", "name", "creationDate", "eyeColor", "hairColor", 
         "height", "birthday", "weight", "nationality"
@@ -37,13 +29,11 @@ public class PersonService {
     public PersonService(
         PersonRepository personRepository,
         CoordinatesService coordinatesService,
-        LocationService locationService,
-        Validator validator
+        LocationService locationService
     ) {
         this.personRepository = personRepository;
         this.coordinatesService = coordinatesService;
         this.locationService = locationService;
-        this.validator = validator;
     }
 
     private Person handleHelperObjects(Person person) {
@@ -54,10 +44,6 @@ public class PersonService {
         Location location = locationService.update(newLocation);
         person.setLocation(location);
         return person;
-    }
-
-    private boolean isValid(Person person) {
-        return validator.validate(person).isEmpty();
     }
 
     public List<Person> getList(
@@ -164,22 +150,6 @@ public class PersonService {
         return personRepository
             .findById(id)
             .orElseThrow(() -> new RuntimeException("No person"));
-    }
-
-    public Integer processFile(MultipartFile file) throws IOException {
-        String jsonContent = new String(file.getBytes(), StandardCharsets.UTF_8);
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule());
-        Person[] persons = mapper.readValue(jsonContent, Person[].class);
-        for (Person person : persons) {
-            if (!isValid(person)) {
-                throw new RuntimeException("Invalid person");
-            }
-        }
-        for (Person person : persons) {
-            add(person);
-        }
-        return persons.length;
     }
 
     public Person add(Person person) {

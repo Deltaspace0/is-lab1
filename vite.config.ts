@@ -25,6 +25,10 @@ export default defineConfig({
       '/login': {
         target: 'http://localhost:8080',
         changeOrigin: true
+      },
+      '/import': {
+        target: 'http://localhost:8080',
+        changeOrigin: true
       }
     }
   }
