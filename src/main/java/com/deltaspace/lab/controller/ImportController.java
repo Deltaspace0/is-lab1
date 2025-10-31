@@ -46,7 +46,7 @@ public class ImportController {
         @CookieValue("uname") String username
     ) {
         try {
-            Integer count = importService.processFile(file, username);
+            Integer count = importService.importFile(file, username);
             return ResponseEntity.ok().body(count);
         } catch (RuntimeException exception) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);

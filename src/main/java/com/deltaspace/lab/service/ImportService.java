@@ -1,5 +1,6 @@
 package com.deltaspace.lab.service;
 
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
@@ -13,6 +14,8 @@ import com.deltaspace.lab.model.Person;
 import com.deltaspace.lab.repository.ImportRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+
+import jakarta.transaction.Transactional;
 
 @Service
 public class ImportService {
@@ -28,24 +31,30 @@ public class ImportService {
         this.personService = personService;
     }
 
-    public Integer processFile(
+    @Transactional
+    private Integer processFile(
         MultipartFile file,
         String username
-    ) {
+    ) throws IOException {
+        String json = new String(file.getBytes(), StandardCharsets.UTF_8);
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+        Person[] persons = mapper.readValue(json, Person[].class);
+        for (Person person : persons) {
+            personService.validate(person);
+        }
+        for (Person person : persons) {
+            personService.add(person);
+        }
+        return persons.length;
+    }
+
+    public Integer importFile(MultipartFile file, String username) {
         try {
-            String json = new String(file.getBytes(), StandardCharsets.UTF_8);
-            ObjectMapper mapper = new ObjectMapper();
-            mapper.registerModule(new JavaTimeModule());
-            Person[] persons = mapper.readValue(json, Person[].class);
-            for (Person person : persons) {
-                personService.validate(person);
-            }
-            for (Person person : persons) {
-                personService.add(person);
-            }
-            ImportData data = new ImportData(true, username, persons.length);
+            Integer count = processFile(file, username);
+            ImportData data = new ImportData(true, username, count);
             importRepository.save(data);
-            return persons.length;
+            return count;
         } catch (Exception exception) {
             ImportData data = new ImportData(false, username, null);
             importRepository.save(data);
