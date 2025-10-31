@@ -3,11 +3,12 @@ import type { Person } from '../interfaces.ts';
 import LabeledInput from './LabeledInput.tsx';
 
 interface PersonIdInputProps {
+  initId?: number;
   onChange: (person: Person) => void;
 }
 
-export default function PersonIdInput({ onChange }: PersonIdInputProps) {
-  const [currentId, setCurrentId] = useState(0);
+export default function PersonIdInput({ initId, onChange }: PersonIdInputProps) {
+  const [currentId, setCurrentId] = useState(initId || 0);
   const [errorMessage, setErrorMessage] = useState('');
   const findPerson = async () => {
     const response = await fetch(`/person/${currentId}`);

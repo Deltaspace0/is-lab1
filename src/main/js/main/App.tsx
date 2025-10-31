@@ -238,7 +238,10 @@ export default function App() {
     </fieldset>,
     edit: <fieldset style={{width: '250px'}}>
       <legend>Edit person (ID: {editId > 0 ? editId : 'None'})</legend>
-      <PersonIdInput onChange={(person) => setEditId(person.id)}/>
+      <PersonIdInput
+        initId={editId}
+        onChange={(person) => setEditId(person.id)}
+      />
       {editId > 0 && <>
         {personInputElement}
         <div className='flex-row'>
