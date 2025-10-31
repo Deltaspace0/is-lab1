@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.deltaspace.lab.enums.Color;
+import com.deltaspace.lab.exception.FieldValidationException;
 import com.deltaspace.lab.model.Person;
 import com.deltaspace.lab.service.PersonService;
 
@@ -120,21 +121,31 @@ public class PersonController {
     }
 
     @PostMapping
-    public ResponseEntity<Person> addPerson(
+    public ResponseEntity<Object> addPerson(
         @Valid @RequestBody Person person
     ) throws URISyntaxException {
-        Person savedPerson = personService.add(person);
-        URI uri = new URI("/person/"+savedPerson.getId());
-        return ResponseEntity.created(uri).body(savedPerson);
+        try {
+            Person savedPerson = personService.add(person);
+            URI uri = new URI("/person/"+savedPerson.getId());
+            return ResponseEntity.created(uri).body(savedPerson);
+        } catch (FieldValidationException exception) {
+            Object body = exception.getFieldErrors();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
+        }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Person> updatePerson(
+    public ResponseEntity<Object> updatePerson(
         @PathVariable Integer id,
         @Valid @RequestBody Person person
     ) {
-        Person currentPerson = personService.update(id, person);
-        return ResponseEntity.ok(currentPerson);
+        try {
+            Person currentPerson = personService.update(id, person);
+            return ResponseEntity.ok(currentPerson);
+        } catch (FieldValidationException exception) {
+            Object body = exception.getFieldErrors();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
+        }
     }
 
     @DeleteMapping

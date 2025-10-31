@@ -38,9 +38,7 @@ public class ImportService {
             mapper.registerModule(new JavaTimeModule());
             Person[] persons = mapper.readValue(json, Person[].class);
             for (Person person : persons) {
-                if (!personService.isValid(person)) {
-                    throw new RuntimeException("Invalid person");
-                }
+                personService.validate(person);
             }
             for (Person person : persons) {
                 personService.add(person);

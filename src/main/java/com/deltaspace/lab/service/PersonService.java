@@ -10,6 +10,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.deltaspace.lab.enums.Color;
+import com.deltaspace.lab.exception.FieldValidationException;
 import com.deltaspace.lab.model.Coordinates;
 import com.deltaspace.lab.model.Location;
 import com.deltaspace.lab.model.Person;
@@ -51,16 +52,18 @@ public class PersonService {
         return person;
     }
 
-    public boolean isValid(Person person) {
+    public void validate(Person person) {
         if (locationService.hasDuplicateName(person.getLocation())) {
-            return false;
+            throw new FieldValidationException("location.name", "Already exists");
         }
         Integer id = person.getId();
         String name = person.getName();
         if (personRepository.existsByNameAndIdNot(name, id)) {
-            return false;
+            throw new FieldValidationException("name", "Already exists");
         }
-        return validator.validate(person).isEmpty();
+        if (!validator.validate(person).isEmpty()) {
+            throw new RuntimeException("ORM constraints violation");
+        }
     }
 
     public List<Person> getList(
@@ -171,16 +174,12 @@ public class PersonService {
 
     public Person add(Person person) {
         person.setId(null);
-        if (!isValid(person)) {
-            throw new RuntimeException("Invalid person");
-        }
+        validate(person);
         return personRepository.save(handleHelperObjects(person));
     }
 
     public Person update(Integer id, Person person) {
-        if (!isValid(person)) {
-            throw new RuntimeException("Invalid person");
-        }
+        validate(person);
         if (!personRepository.existsById(id)) {
             return null;
         }
