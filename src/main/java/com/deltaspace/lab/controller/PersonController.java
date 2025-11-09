@@ -3,7 +3,9 @@ package com.deltaspace.lab.controller;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Set;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.deltaspace.lab.enums.Color;
 import com.deltaspace.lab.exception.FieldValidationException;
 import com.deltaspace.lab.model.Person;
+import com.deltaspace.lab.service.PageService;
 import com.deltaspace.lab.service.PersonService;
 
 import jakarta.validation.Valid;
@@ -29,9 +32,18 @@ import jakarta.validation.Valid;
 public class PersonController {
 
     private final PersonService personService;
+    private final PageService pageService;
+    private static final Set<String> ALLOWED_SORT_FIELDS = Set.of(
+        "id", "name", "creationDate", "eyeColor", "hairColor", 
+        "height", "birthday", "weight", "nationality"
+    );
 
-    public PersonController(PersonService personService) {
+    public PersonController(
+        PersonService personService,
+        PageService pageService
+    ) {
         this.personService = personService;
+        this.pageService = pageService;
     }
 
     @GetMapping("/amount")
@@ -88,22 +100,15 @@ public class PersonController {
         if (nameFilter == null) {
             nameFilter = "";
         }
-        if (sortField == null) {
-            List<Person> list = personService.getList(
-                pageNumber,
-                pageSize,
-                nameFilter
-            );
-            return ResponseEntity.ok(list);
-        }
         try {
-            List<Person> list = personService.getList(
+            Pageable pageable = pageService.getPageable(
                 pageNumber,
                 pageSize,
-                nameFilter,
                 sortField,
-                sortOrder
+                sortOrder,
+                ALLOWED_SORT_FIELDS
             );
+            List<Person> list = personService.getList(pageable, nameFilter);
             return ResponseEntity.ok(list);
         } catch (RuntimeException exception) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);

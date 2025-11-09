@@ -2,11 +2,8 @@ package com.deltaspace.lab.service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.deltaspace.lab.enums.Color;
@@ -25,10 +22,6 @@ public class PersonService {
     private final CoordinatesService coordinatesService;
     private final LocationService locationService;
     private final Validator validator;
-    private static final Set<String> ALLOWED_SORT_FIELDS = Set.of(
-        "id", "name", "creationDate", "eyeColor", "hairColor", 
-        "height", "birthday", "weight", "nationality"
-    );
 
     public PersonService(
         PersonRepository personRepository,
@@ -66,35 +59,7 @@ public class PersonService {
         }
     }
 
-    public List<Person> getList(
-        Integer pageNumber,
-        Integer pageSize,
-        String nameFilter
-    ) {
-        Pageable pageable = PageRequest.of(pageNumber, pageSize);
-        return personRepository.findByNameContaining(
-            nameFilter,
-            pageable
-        ).getContent();
-    }
-
-    public List<Person> getList(
-        Integer pageNumber,
-        Integer pageSize,
-        String nameFilter,
-        String field,
-        String sortOrder
-    ) {
-        if (!ALLOWED_SORT_FIELDS.contains(field)) {
-            throw new RuntimeException("Wrong field: "+field);
-        }
-        if (!"desc".equals(sortOrder) && !"asc".equals(sortOrder)) {
-            throw new RuntimeException("Wrong sort order: "+field);
-        }
-        Sort sort = "asc".equals(sortOrder)
-            ? Sort.by(field).ascending()
-            : Sort.by(field).descending();
-        Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
+    public List<Person> getList(Pageable pageable, String nameFilter) {
         return personRepository.findByNameContaining(
             nameFilter,
             pageable

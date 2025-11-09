@@ -1,7 +1,9 @@
 package com.deltaspace.lab.controller;
 
 import java.util.List;
+import java.util.Set;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
@@ -15,15 +17,24 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.deltaspace.lab.model.ImportData;
 import com.deltaspace.lab.service.ImportService;
+import com.deltaspace.lab.service.PageService;
 
 @RestController
 @RequestMapping("/import")
 public class ImportController {
 
     private final ImportService importService;
+    private final PageService pageService;
+    private static final Set<String> ALLOWED_SORT_FIELDS = Set.of(
+        "id", "status", "username", "count"
+    );
 
-    public ImportController(ImportService importService) {
+    public ImportController(
+        ImportService importService,
+        PageService pageService
+    ) {
         this.importService = importService;
+        this.pageService = pageService;
     }
 
     @GetMapping("/amount")
@@ -39,20 +50,16 @@ public class ImportController {
         @RequestParam(required = false) String sortOrder,
         @CookieValue("uname") String username
     ) {
-        if (sortField == null) {
-            List<ImportData> list = importService.getImportHistory(
-                pageNumber,
-                pageSize,
-                username
-            );
-            return ResponseEntity.ok(list);
-        }
         try {
-            List<ImportData> list = importService.getImportHistory(
+            Pageable pageable = pageService.getPageable(
                 pageNumber,
                 pageSize,
                 sortField,
                 sortOrder,
+                ALLOWED_SORT_FIELDS
+            );
+            List<ImportData> list = importService.getImportHistory(
+                pageable,
                 username
             );
             return ResponseEntity.ok(list);

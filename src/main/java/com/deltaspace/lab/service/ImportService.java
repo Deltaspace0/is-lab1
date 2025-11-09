@@ -3,11 +3,8 @@ package com.deltaspace.lab.service;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.Set;
 
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -24,9 +21,6 @@ public class ImportService {
 
     private final ImportRepository importRepository;
     private final PersonService personService;
-    private static final Set<String> ALLOWED_SORT_FIELDS = Set.of(
-        "id", "status", "username", "count"
-    );
 
     public ImportService(
         ImportRepository importRepository,
@@ -81,35 +75,6 @@ public class ImportService {
         return importRepository
             .findByUsername(username, pageable)
             .getContent();
-    }
-
-    public List<ImportData> getImportHistory(
-        Integer pageNumber,
-        Integer pageSize,
-        String username
-    ) {
-        Pageable pageable = PageRequest.of(pageNumber, pageSize);
-        return getImportHistory(pageable, username);
-    }
-
-    public List<ImportData> getImportHistory(
-        Integer pageNumber,
-        Integer pageSize,
-        String field,
-        String sortOrder,
-        String username
-    ) {
-        if (!ALLOWED_SORT_FIELDS.contains(field)) {
-            throw new RuntimeException("Wrong field: "+field);
-        }
-        if (!"desc".equals(sortOrder) && !"asc".equals(sortOrder)) {
-            throw new RuntimeException("Wrong sort order: "+field);
-        }
-        Sort sort = "asc".equals(sortOrder)
-            ? Sort.by(field).ascending()
-            : Sort.by(field).descending();
-        Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
-        return getImportHistory(pageable, username);
     }
 
 }
