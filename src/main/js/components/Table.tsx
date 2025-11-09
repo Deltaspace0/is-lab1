@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState, type JSX } from 'react';
 import EnumInput from './EnumInput.tsx';
 import Row from './Row.tsx';
+import type { ColumnInfo } from '../interfaces.ts';
 
 interface TableProps<T> {
   label: string;
@@ -11,7 +12,8 @@ interface TableProps<T> {
   optionalParams?: string;
   disablePagination?: boolean;
   requestBody?: object;
-  getStrings: (elem?: T) => string[];
+  getStrings: (elem: T) => string[];
+  columnsInfo: ColumnInfo[];
   onClick: (i: number) => void;
 }
 
@@ -19,6 +21,8 @@ export default function Table<T>(props: TableProps<T>) {
   const [pageNumber, setPageNumber] = useState(0);
   const [pageSize, setPageSize] = useState(20);
   const [maxPageNumber, setMaxPageNumber] = useState(0);
+  const [sortField, setSortField] = useState('');
+  const [sortOrder, setSortOrder] = useState('asc');
   const {
     setList,
     endpoint,
@@ -27,7 +31,13 @@ export default function Table<T>(props: TableProps<T>) {
     disablePagination,
     requestBody
   } = props;
-  const params = useMemo(() => optionalParams || '', [optionalParams]);
+  const params = useMemo(() => {
+    const optParams = optionalParams || '';
+    if (sortField) {
+      return `${optParams}&sortField=${sortField}&sortOrder=${sortOrder}`;
+    }
+    return optParams
+  }, [optionalParams, sortField, sortOrder]);
   const fetchBody = useCallback(async (request: string) => {
     if (requestBody) {
       return fetch(request, {
@@ -66,10 +76,26 @@ export default function Table<T>(props: TableProps<T>) {
   useEffect(() => {
     updateList();
   }, [updateList]);
-  const headers = props.getStrings();
   const headerElements: JSX.Element[] = [];
-  for (const header of headers) {
-    headerElements.push(<th scope='col'>{header}</th>);
+  for (const { name, label, sortable } of props.columnsInfo) {
+    if (sortable) {
+      let ariaSort: React.AriaAttributes['aria-sort'];
+      if (name === sortField) {
+        ariaSort = sortOrder === 'asc' ? 'ascending' : 'descending';
+      }
+      headerElements.push(<th
+          scope='col'
+          aria-sort={ariaSort}
+          onClick={() => {
+            const oppositeOrder = sortOrder === 'asc' ? 'desc' : 'asc';
+            setSortOrder(name === sortField ? oppositeOrder : 'asc');
+            setSortField(name);
+          }}>
+        {label}
+      </th>);
+    } else {
+      headerElements.push(<th scope='col' className='no-sort'>{label}</th>);
+    }
   }
   const rows: JSX.Element[] = [];
   for (let i = 0; i < props.list.length; i++) {

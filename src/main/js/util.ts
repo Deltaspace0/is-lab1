@@ -49,73 +49,49 @@ export function getRandomPerson(): Person {
   };
 }
 
-export function getCoordinatesStrings(coordinates?: Coordinates): string[] {
-  if (coordinates) {
-    return [
-      coordinates.id?.toString() || '',
-      coordinates.x.toString(),
-      coordinates.y.toString()
-    ];
-  }
-  return ['ID', 'X', 'Y'];
-}
-
-export function getLocationStrings(location?: Location): string[] {
-  if (location) {
-    return [
-      location.id?.toString() || '',
-      location.name,
-      location.x.toString(),
-      location.y.toString()
-    ];
-  }
-  return ['ID', 'Name', 'X', 'Y'];
-}
-
-export function getPersonStrings(person?: Person): string[] {
-  const coordToString = ({ x, y }: Coordinates): string => {
-    return `(${x}, ${y})`;
-  };
-  if (person) {
-    return [
-      person.id.toString(),
-      person.name,
-      coordToString(person.coordinates),
-      person.creationDate?.toLocaleString() || 'undefined',
-      person.eyeColor,
-      person.hairColor,
-      `"${person.location.name}": ${coordToString(person.location)}`,
-      person.height.toString(),
-      person.birthday.toLocaleDateString(),
-      person.weight.toString(),
-      person.nationality
-    ];
-  }
+export function getCoordinatesStrings(coordinates: Coordinates): string[] {
   return [
-    'ID',
-    'Name',
-    'Coordinates',
-    'Creation date',
-    'Eye color',
-    'Hair color',
-    'Location',
-    'Height',
-    'Birthday',
-    'Weight',
-    'Nationality'
+    coordinates.id?.toString() || '',
+    coordinates.x.toString(),
+    coordinates.y.toString()
   ];
 }
 
-export function getImportStrings(importData?: ImportData): string[] {
-  if (importData) {
-    return [
-      importData.id.toString(),
-      importData.status ? 'Success' : 'Fail',
-      importData.username,
-      importData.count?.toString() || '-'
-    ];
-  }
-  return ['ID', 'Status', 'Username', 'Count'];
+export function getLocationStrings(location: Location): string[] {
+  return [
+    location.id?.toString() || '',
+    location.name,
+    location.x.toString(),
+    location.y.toString()
+  ];
+}
+
+export function getPersonStrings(person: Person): string[] {
+  const coordToString = ({ x, y }: Coordinates): string => {
+    return `(${x}, ${y})`;
+  };
+  return [
+    person.id.toString(),
+    person.name,
+    coordToString(person.coordinates),
+    person.creationDate?.toLocaleString() || 'undefined',
+    person.eyeColor,
+    person.hairColor,
+    `"${person.location.name}": ${coordToString(person.location)}`,
+    person.height.toString(),
+    person.birthday.toLocaleDateString(),
+    person.weight.toString(),
+    person.nationality
+  ];
+}
+
+export function getImportStrings(importData: ImportData): string[] {
+  return [
+    importData.id.toString(),
+    importData.status ? 'Success' : 'Fail',
+    importData.username,
+    importData.count?.toString() || '-'
+  ];
 }
 
 export function deserializePerson(person: Person): Person {

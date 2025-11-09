@@ -1,16 +1,13 @@
 import '../App.css'
 import { useCallback, useEffect, useState } from 'react';
-import EnumInput from '../components/EnumInput.tsx';
 import LabeledInput from '../components/LabeledInput.tsx';
 import Table from '../components/Table.tsx';
 import PersonInput from '../components/PersonInput.tsx';
 import PersonIdInput from '../components/PersonIdInput.tsx';
 import Special from './Special.tsx';
-import { fieldValues } from '../interfaces.ts';
 import type {
   Coordinates,
   ErrorResponse,
-  Field,
   Location,
   Person,
   ImportData,
@@ -68,8 +65,6 @@ export default function App() {
   const [valErrors, setValErrors] = useState<ValidationError[]>([]);
   const [fileStatus, setFileStatus] = useState('');
   const [selectedFile, setSelectedFile] = useState<null | File>(null);
-  const [sortField, setSortField] = useState<Field>('id');
-  const [sortOrder, setSortOrder] = useState('asc');
   const [nameFilter, setNameFilter] = useState('');
   const [personRerender, setPersonRerender] = useState(false);
   const deserPerson = useCallback((person: Person) => {
@@ -257,6 +252,12 @@ export default function App() {
       setList={setImportList}
       endpoint='/import'
       getStrings={getImportStrings}
+      columnsInfo={[
+        { name: 'id', label: 'ID', sortable: true },
+        { name: 'status', label: 'Status', sortable: true },
+        { name: 'username', label: 'Username', sortable: true },
+        { name: 'count', label: 'Count', sortable: true }
+      ]}
       onClick={() => {}}
     />,
     personTable: <>
@@ -266,36 +267,31 @@ export default function App() {
         setList={setPersonList}
         endpoint='/person'
         deserialize={deserPerson}
-        optionalParams={sortField === 'None'
-          ? `&nameFilter=${nameFilter}`
-          : `&sortField=${sortField}&sortOrder=${sortOrder}`+
-            `&nameFilter=${nameFilter}`
-        }
+        optionalParams={`&nameFilter=${nameFilter}`}
         getStrings={getPersonStrings}
+        columnsInfo={[
+          { name: 'id', label: 'ID', sortable: true },
+          { name: 'name', label: 'Name', sortable: true },
+          { name: 'coordinates', label: 'Coordinates', sortable: false },
+          { name: 'creationDate', label: 'Creation date', sortable: true },
+          { name: 'eyeColor', label: 'Eye color', sortable: true },
+          { name: 'hairColor', label: 'Hair color', sortable: true },
+          { name: 'location', label: 'Location', sortable: false },
+          { name: 'height', label: 'Height', sortable: true },
+          { name: 'birthday', label: 'Birthday', sortable: true },
+          { name: 'weight', label: 'Weight', sortable: true },
+          { name: 'nationality', label: 'Nationality', sortable: true }
+        ]}
         onClick={handlePersonTableClick}
       />
-      <div className='flex-row'>
-        <EnumInput
-          label='Sort by'
-          possibleValues={fieldValues}
-          value={sortField}
-          onChange={(value) => setSortField(value)}
+      <label style={{width: '256px'}}>
+        <p className='text'>Name filter:</p>
+        <input
+          type='text'
+          value={nameFilter}
+          onChange={(e) => setNameFilter(e.target.value)}
         />
-        <EnumInput
-          label='Sort order'
-          possibleValues={['asc', 'desc']}
-          value={sortOrder}
-          onChange={(value) => setSortOrder(value)}
-        />
-        <label>
-          <p className='text'>Name filter:</p>
-          <input
-            type='text'
-            value={nameFilter}
-            onChange={(e) => setNameFilter(e.target.value)}
-          />
-        </label>
-      </div>
+      </label>
     </>,
     coordinatesTable: <Table
       label='Coordinates'
@@ -303,6 +299,11 @@ export default function App() {
       setList={setCoordinatesList}
       endpoint='/coordinates'
       getStrings={getCoordinatesStrings}
+      columnsInfo={[
+        { name: 'id', label: 'ID', sortable: true },
+        { name: 'x', label: 'X', sortable: true },
+        { name: 'y', label: 'Y', sortable: true }
+      ]}
       onClick={handleCoordinatesTableClick}
     />,
     locationTable: <Table
@@ -311,6 +312,12 @@ export default function App() {
       setList={setLocationList}
       endpoint='/location'
       getStrings={getLocationStrings}
+      columnsInfo={[
+        { name: 'id', label: 'ID', sortable: true },
+        { name: 'name', label: 'Name', sortable: true },
+        { name: 'x', label: 'X', sortable: true },
+        { name: 'y', label: 'Y', sortable: true }
+      ]}
       onClick={handleLocationTableClick}
     />
   };
