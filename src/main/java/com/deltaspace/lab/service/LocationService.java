@@ -2,7 +2,6 @@ package com.deltaspace.lab.service;
 
 import java.util.List;
 
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -12,7 +11,7 @@ import com.deltaspace.lab.repository.LocationRepository;
 @Service
 public class LocationService {
 
-    public final LocationRepository locationRepository;
+    private final LocationRepository locationRepository;
 
     public LocationService(LocationRepository locationRepository) {
         this.locationRepository = locationRepository;
@@ -24,8 +23,7 @@ public class LocationService {
         return locationRepository.existsByNameAndIdNot(name, id);
     }
 
-    public List<Location> getList(Integer pageNumber, Integer pageSize) {
-        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+    public List<Location> getList(Pageable pageable) {
         return locationRepository.findAll(pageable).getContent();
     }
 
