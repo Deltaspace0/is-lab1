@@ -2,7 +2,6 @@ package com.deltaspace.lab.service;
 
 import java.util.List;
 
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -12,14 +11,13 @@ import com.deltaspace.lab.repository.CoordinatesRepository;
 @Service
 public class CoordinatesService {
 
-    public final CoordinatesRepository coordinatesRepository;
+    private final CoordinatesRepository coordinatesRepository;
 
     public CoordinatesService(CoordinatesRepository coordinatesRepository) {
         this.coordinatesRepository = coordinatesRepository;
     }
 
-    public List<Coordinates> getList(Integer pageNumber, Integer pageSize) {
-        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+    public List<Coordinates> getList(Pageable pageable) {
         return coordinatesRepository.findAll(pageable).getContent();
     }
 
