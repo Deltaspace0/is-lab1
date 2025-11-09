@@ -32,12 +32,33 @@ public class ImportController {
     }
 
     @GetMapping
-    public List<ImportData> getImportHistory(
+    public ResponseEntity<List<ImportData>> getImportHistory(
         @RequestParam(required = true) Integer pageNumber,
         @RequestParam(required = true) Integer pageSize,
+        @RequestParam(required = false) String sortField,
+        @RequestParam(required = false) String sortOrder,
         @CookieValue("uname") String username
     ) {
-        return importService.getImportHistory(pageNumber, pageSize, username);
+        if (sortField == null) {
+            List<ImportData> list = importService.getImportHistory(
+                pageNumber,
+                pageSize,
+                username
+            );
+            return ResponseEntity.ok(list);
+        }
+        try {
+            List<ImportData> list = importService.getImportHistory(
+                pageNumber,
+                pageSize,
+                sortField,
+                sortOrder,
+                username
+            );
+            return ResponseEntity.ok(list);
+        } catch (RuntimeException exception) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
     }
 
     @PostMapping
