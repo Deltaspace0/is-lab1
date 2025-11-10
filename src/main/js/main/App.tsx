@@ -31,28 +31,6 @@ type Panel
   | 'coordinatesTable'
   | 'locationTable';
 
-const defaultPerson: Person = {
-  id: 0,
-  name: '',
-  coordinates: {
-    id: 0,
-    x: 0,
-    y: 0
-  },
-  eyeColor: 'BLACK',
-  hairColor: 'BLACK',
-  location: {
-    id: 0,
-    name: '',
-    x: 0,
-    y: 0
-  },
-  height: 0,
-  birthday: new Date('2000-01-01'),
-  weight: 0,
-  nationality: 'RUSSIA'
-};
-
 export default function App() {
   const [username, setUsername] = useState('');
   const [loggedUsername, setLoggedUsername] = useState('');
@@ -63,7 +41,7 @@ export default function App() {
   const [locationList, setLocationList] = useState<Location[]>([]);
   const [importList, setImportList] = useState<ImportData[]>([]);
   const [editId, setEditId] = useState(0);
-  const [editPerson, setEditPerson] = useState<Person>(defaultPerson);
+  const [editPerson, setEditPerson] = useState<Person>(getRandomPerson());
   const [valErrors, setValErrors] = useState<ValidationError[]>([]);
   const [fileStatus, setFileStatus] = useState('');
   const [selectedFile, setSelectedFile] = useState<null | File>(null);
@@ -371,7 +349,10 @@ export default function App() {
             Upload
           </button>
         </LabeledInput>
-        <button className='big-button' onClick={() => setPanel('add')}>
+        <button className='big-button' onClick={() => {
+          setPanel('add');
+          setEditPerson(getRandomPerson());
+        }}>
           Add person
         </button>
         <button className='big-button' onClick={() => setPanel('edit')}>
