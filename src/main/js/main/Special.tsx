@@ -94,6 +94,19 @@ export default function Special() {
     requestBody={lessBirthday}
     disablePagination={true}
     getStrings={getPersonStrings}
+    columnsInfo={[
+      { name: 'id', label: 'ID', sortable: false },
+      { name: 'name', label: 'Name', sortable: false },
+      { name: 'coordinates', label: 'Coordinates', sortable: false },
+      { name: 'creationDate', label: 'Creation date', sortable: false },
+      { name: 'eyeColor', label: 'Eye color', sortable: false },
+      { name: 'hairColor', label: 'Hair color', sortable: false },
+      { name: 'location', label: 'Location', sortable: false },
+      { name: 'height', label: 'Height', sortable: false },
+      { name: 'birthday', label: 'Birthday', sortable: false },
+      { name: 'weight', label: 'Weight', sortable: false },
+      { name: 'nationality', label: 'Nationality', sortable: false }
+    ]}
     onClick={() => {}}
   />));
 }
