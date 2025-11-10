@@ -35,12 +35,14 @@ const defaultPerson: Person = {
   id: 0,
   name: '',
   coordinates: {
+    id: 0,
     x: 0,
     y: 0
   },
   eyeColor: 'BLACK',
   hairColor: 'BLACK',
   location: {
+    id: 0,
     name: '',
     x: 0,
     y: 0
@@ -105,10 +107,6 @@ export default function App() {
     })();
   }, [deserPerson, editId, personList]);
   useEffect(() => setValErrors([]), [editPerson]);
-  const deletePerson = async () => {
-    await fetch(`/person/${editPerson.id}`, { method: 'DELETE' });
-    setPanel('personTable');
-  };
   const processErrors = (response: ErrorResponse) => {
     console.log('Error message from the server:', response.message);
     if (response.errors instanceof Array) {
@@ -226,25 +224,32 @@ export default function App() {
     validationErrors={valErrors}
   />;
   const panels = {
-    add: <fieldset style={{width: '250px'}}>
-      <legend>Add person</legend>
-      {personInputElement}
-      <button onClick={addPerson}>Add</button>
-    </fieldset>,
-    edit: <fieldset style={{width: '250px'}}>
-      <legend>Edit person (ID: {editId > 0 ? editId : 'None'})</legend>
-      <PersonIdInput
-        initId={editId}
-        onChange={(person) => setEditId(person.id)}
-      />
-      {editId > 0 && <>
+    add: <>
+      <fieldset style={{width: '250px'}}>
+        <legend>Add person</legend>
         {personInputElement}
-        <div className='flex-row'>
-          <button onClick={updatePerson}>Save</button>
-          <button onClick={deletePerson}>Delete</button>
-        </div>
-      </>}
-    </fieldset>,
+      </fieldset>
+      <button onClick={addPerson} style={{
+        width: '128px',
+        margin: '4px auto',
+        display: 'block'
+      }}>Add</button>
+    </>,
+    edit: <>
+      <fieldset style={{width: '250px'}}>
+        <legend>Edit person (ID: {editId > 0 ? editId : 'None'})</legend>
+        <PersonIdInput
+          initId={editId}
+          onChange={(person) => setEditId(person.id)}
+        />
+        {editId > 0 && personInputElement}
+      </fieldset>
+      {editId > 0 && <button onClick={updatePerson} style={{
+        width: '128px',
+        margin: '4px auto',
+        display: 'block'
+      }}>Save</button>}
+    </>,
     special: <Special/>,
     history: <Table
       label='Import history'
@@ -282,6 +287,7 @@ export default function App() {
           { name: 'weight', label: 'Weight', sortable: true },
           { name: 'nationality', label: 'Nationality', sortable: true }
         ]}
+        deletableRows={true}
         onClick={handlePersonTableClick}
       />
       <label style={{width: '256px'}}>
@@ -304,6 +310,7 @@ export default function App() {
         { name: 'x', label: 'X', sortable: true },
         { name: 'y', label: 'Y', sortable: true }
       ]}
+      deletableRows={true}
       onClick={handleCoordinatesTableClick}
     />,
     locationTable: <Table
@@ -318,6 +325,7 @@ export default function App() {
         { name: 'x', label: 'X', sortable: true },
         { name: 'y', label: 'Y', sortable: true }
       ]}
+      deletableRows={true}
       onClick={handleLocationTableClick}
     />
   };

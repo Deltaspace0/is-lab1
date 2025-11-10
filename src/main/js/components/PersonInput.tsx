@@ -90,6 +90,27 @@ export default function PersonInput(props: PersonInputProps) {
     />
     <fieldset>
       <legend>Coordinates</legend>
+      <LabeledInput label='ID'>
+        <input
+          type='number'
+          value={person.coordinates.id || 0}
+          readOnly={true}
+          style={{width: '64px'}}
+        />
+        <button
+            onClick={props.onCoordinatesClick}
+            style={{width: '64px', height: '24px'}}>
+          Select
+        </button>
+        <button
+            onClick={() => {
+              person.coordinates.id = undefined;
+              onChange(person);
+            }}
+            style={{width: '64px', height: '24px'}}>
+          New
+        </button>
+      </LabeledInput>
       <div className='flex-row'>
         <LabeledInput label='X' validationError={errorRecord['coordinates.x']}>
           <input
@@ -112,34 +133,30 @@ export default function PersonInput(props: PersonInputProps) {
           />
         </LabeledInput>
       </div>
-      <div>
-        <label>
-          <p className='text' style={{marginLeft: 'auto'}}>ID:</p>
-          <input
-            type='number'
-            value={person.coordinates.id || 0}
-            readOnly={true}
-          />
-        </label>
-      </div>
-      <div className='flex-row'>
+    </fieldset>
+    <fieldset>
+      <legend>Location</legend>
+      <LabeledInput label='ID'>
+        <input
+          type='number'
+          value={person.location.id || 0}
+          readOnly={true}
+          style={{width: '64px'}}
+        />
         <button
-            onClick={props.onCoordinatesClick}
-            style={{height: '24px'}}>
+            onClick={props.onLocationClick}
+            style={{width: '64px', height: '24px'}}>
           Select
         </button>
         <button
             onClick={() => {
-              person.coordinates.id = undefined;
+              person.location.id = undefined;
               onChange(person);
             }}
-            style={{height: '24px'}}>
+            style={{width: '64px', height: '24px'}}>
           New
         </button>
-      </div>
-    </fieldset>
-    <fieldset>
-      <legend>Location</legend>
+      </LabeledInput>
       <LabeledInput label='Name' validationError={errorRecord['location.name']}>
         <input
           type='text'
@@ -171,31 +188,6 @@ export default function PersonInput(props: PersonInputProps) {
             }}
           />
         </LabeledInput>
-      </div>
-      <div>
-        <label>
-          <p className='text' style={{marginLeft: 'auto'}}>ID:</p>
-          <input
-            type='number'
-            value={person.location.id || 0}
-            readOnly={true}
-          />
-        </label>
-      </div>
-      <div className='flex-row'>
-        <button
-            onClick={props.onLocationClick}
-            style={{height: '24px'}}>
-          Select
-        </button>
-        <button
-            onClick={() => {
-              person.location.id = undefined;
-              onChange(person);
-            }}
-            style={{height: '24px'}}>
-          New
-        </button>
       </div>
     </fieldset>
   </div>);

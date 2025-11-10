@@ -42,4 +42,8 @@ public class CoordinatesService {
         coordinatesRepository.deleteAll();
     }
 
+    public void delete(Integer id) {
+        coordinatesRepository.deleteById(id);
+    }
+
 }

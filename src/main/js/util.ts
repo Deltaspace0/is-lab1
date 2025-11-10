@@ -32,12 +32,14 @@ export function getRandomPerson(): Person {
     id: 0,
     name: getRandomString(),
     coordinates: {
+      id: 0,
       x: Math.floor(Math.random()*100-50),
       y: Math.floor(Math.random()*100-50)
     },
     eyeColor: getRandomColor(),
     hairColor: getRandomColor(),
     location: {
+      id: 0,
       name: getRandomString(),
       x: Math.floor(Math.random()*100-50),
       y: Math.floor(Math.random()*100-50)

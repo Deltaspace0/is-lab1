@@ -3,16 +3,18 @@ import type { JSX } from 'react';
 interface RowProps {
   strings: string[];
   onClick: () => void;
+  onClickDelete?: () => void;
 }
 
-export default function Row({ strings, onClick }: RowProps) {
+export default function Row({ strings, onClick, onClickDelete }: RowProps) {
   const cellElements: JSX.Element[] = [];
   for (const s of strings) {
-    cellElements.push(<td>{s}</td>);
+    cellElements.push(<td onClick={onClick}>{s}</td>);
   }
-  return (<tr
-      onClick={onClick} 
-      style={{cursor: 'pointer', userSelect: 'none'}}>
+  if (onClickDelete) {
+    cellElements.push(<td onClick={onClickDelete}>❌</td>)
+  }
+  return (<tr style={{cursor: 'pointer', userSelect: 'none'}}>
     {cellElements}
   </tr>);
 }

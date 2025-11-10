@@ -6,6 +6,7 @@ import java.util.Set;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -68,6 +69,16 @@ public class CoordinatesController {
         try {
             Coordinates coordinates = coordinatesService.getById(id);
             return ResponseEntity.ok(coordinates);
+        } catch (RuntimeException exception) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteCoordinates(@PathVariable Integer id) {
+        try {
+            coordinatesService.delete(id);
+            return ResponseEntity.ok().build();
         } catch (RuntimeException exception) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }

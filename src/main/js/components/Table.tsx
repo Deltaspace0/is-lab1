@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useMemo, useState, type JSX } from 'react';
 import EnumInput from './EnumInput.tsx';
 import Row from './Row.tsx';
-import type { ColumnInfo } from '../interfaces.ts';
+import type { ColumnInfo, Entity } from '../interfaces.ts';
 
-interface TableProps<T> {
+interface TableProps<T extends Entity> {
   label: string;
   list: T[];
   setList: (list: T[]) => void;
@@ -14,10 +14,11 @@ interface TableProps<T> {
   requestBody?: object;
   getStrings: (elem: T) => string[];
   columnsInfo: ColumnInfo[];
+  deletableRows?: boolean;
   onClick: (i: number) => void;
 }
 
-export default function Table<T>(props: TableProps<T>) {
+export default function Table<T extends Entity>(props: TableProps<T>) {
   const [pageNumber, setPageNumber] = useState(0);
   const [pageSize, setPageSize] = useState(20);
   const [maxPageNumber, setMaxPageNumber] = useState(0);
@@ -97,10 +98,29 @@ export default function Table<T>(props: TableProps<T>) {
       headerElements.push(<th scope='col' className='no-sort'>{label}</th>);
     }
   }
+  if (props.deletableRows) {
+    headerElements.push(<th scope='col' className='no-sort'></th>);
+  }
+  const onClickDelete = async (i: number) => {
+    const response = await fetch(`${endpoint}/${props.list[i].id}`, {
+      method: 'DELETE'
+    });
+    if (!response.ok) {
+      alert('Cannot remove object');
+    }
+    updateList();
+  };
   const rows: JSX.Element[] = [];
   for (let i = 0; i < props.list.length; i++) {
     const strings = props.getStrings(props.list[i]);
-    rows.push(<Row strings={strings} onClick={() => props.onClick(i)}/>);
+    rows.push(<Row
+      strings={strings}
+      onClick={() => props.onClick(i)}
+      onClickDelete={props.deletableRows
+        ? () => onClickDelete(i)
+        : undefined
+      }
+    />);
   }
   return (<>
     <p className='text' style={{fontSize: '16px'}}>{props.label}</p>

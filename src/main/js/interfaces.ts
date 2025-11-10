@@ -4,21 +4,22 @@ export type Country = 'RUSSIA' | 'SPAIN' | 'THAILAND';
 export const colorValues: Color[] = ['BLACK', 'BLUE', 'YELLOW', 'ORANGE', 'WHITE'];
 export const countryValues: Country[] = ['RUSSIA', 'SPAIN', 'THAILAND'];
 
-export interface Coordinates {
-  id?: number;
+export interface Entity {
+  id: number;
+}
+
+export interface Coordinates extends Entity {
   x: number;
   y: number;
 }
 
-export interface Location {
-  id?: number;
+export interface Location extends Entity {
   name: string;
   x: number;
   y: number;
 }
 
-export interface Person {
-  id: number;
+export interface Person extends Entity {
   name: string;
   coordinates: Coordinates;
   creationDate?: Date;
@@ -31,8 +32,7 @@ export interface Person {
   nationality: Country;
 }
 
-export interface ImportData {
-  id: number;
+export interface ImportData extends Entity {
   status: boolean;
   username: string;
   count?: number;
