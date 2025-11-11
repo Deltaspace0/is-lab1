@@ -5,13 +5,9 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Pageable;
-import org.springframework.retry.annotation.Backoff;
-import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionSystemException;
-import org.springframework.transaction.annotation.Isolation;
-import org.springframework.transaction.annotation.Transactional;
 
+import com.deltaspace.lab.annotation.RetryableTransactional;
 import com.deltaspace.lab.enums.Color;
 import com.deltaspace.lab.exception.FieldValidationException;
 import com.deltaspace.lab.model.Coordinates;
@@ -149,24 +145,14 @@ public class PersonService {
             .orElseThrow(() -> new RuntimeException("No person"));
     }
 
-    @Retryable(
-        maxAttempts = 10,
-        backoff = @Backoff(delay = 100),
-        retryFor = TransactionSystemException.class
-    )
-    @Transactional(isolation = Isolation.SERIALIZABLE)
+    @RetryableTransactional
     public Person add(Person person) {
         person.setId(null);
         validate(person);
         return personRepository.save(handleHelperObjects(person));
     }
 
-    @Retryable(
-        maxAttempts = 10,
-        backoff = @Backoff(delay = 100),
-        retryFor = TransactionSystemException.class
-    )
-    @Transactional(isolation = Isolation.SERIALIZABLE)
+    @RetryableTransactional
     public Person update(Integer id, Person person) {
         validate(person);
         Optional<Person> existingPerson = personRepository.findById(id);

@@ -3,14 +3,10 @@ package com.deltaspace.lab.service;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
-import org.springframework.retry.annotation.Backoff;
-import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionSystemException;
-import org.springframework.transaction.annotation.Isolation;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.deltaspace.lab.annotation.RetryableTransactional;
 import com.deltaspace.lab.model.Person;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -24,12 +20,7 @@ public class FileService {
         this.personService = personService;
     }
 
-    @Retryable(
-        maxAttempts = 10,
-        backoff = @Backoff(delay = 100),
-        retryFor = TransactionSystemException.class
-    )
-    @Transactional(isolation = Isolation.SERIALIZABLE)
+    @RetryableTransactional
     public Integer processFile(
         MultipartFile file,
         String username
