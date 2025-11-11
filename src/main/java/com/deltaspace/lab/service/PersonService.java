@@ -2,6 +2,7 @@ package com.deltaspace.lab.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.retry.annotation.Backoff;
@@ -162,10 +163,12 @@ public class PersonService {
 
     public Person update(Integer id, Person person) {
         validate(person);
-        if (!personRepository.existsById(id)) {
+        Optional<Person> existingPerson = personRepository.findById(id);
+        if (!existingPerson.isPresent()) {
             return null;
         }
         person.setId(id);
+        person.setCreationDate(existingPerson.get().getCreationDate());
         return personRepository.save(handleHelperObjects(person));
     }
 

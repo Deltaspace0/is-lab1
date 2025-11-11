@@ -94,6 +94,10 @@ public class Person {
         return creationDate;
     }
 
+    public void setCreationDate(java.time.LocalDateTime creationDate) {
+        this.creationDate = creationDate;
+    }
+
     public Color getEyeColor() {
         return eyeColor;
     }
