@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionSystemException;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -147,7 +148,11 @@ public class PersonService {
             .orElseThrow(() -> new RuntimeException("No person"));
     }
 
-    @Retryable(maxAttempts = 10, backoff = @Backoff(delay = 100))
+    @Retryable(
+        maxAttempts = 10,
+        backoff = @Backoff(delay = 100),
+        retryFor = TransactionSystemException.class
+    )
     @Transactional(isolation = Isolation.SERIALIZABLE)
     public Person add(Person person) {
         person.setId(null);
