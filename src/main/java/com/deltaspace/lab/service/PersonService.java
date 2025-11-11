@@ -4,7 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.data.domain.Pageable;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.deltaspace.lab.enums.Color;
 import com.deltaspace.lab.exception.FieldValidationException;
@@ -47,12 +51,18 @@ public class PersonService {
 
     public void validate(Person person) {
         if (locationService.hasDuplicateName(person.getLocation())) {
-            throw new FieldValidationException("location.name", "Already exists");
+            throw new FieldValidationException(
+                "location.name",
+                "Already exists"
+            );
         }
         Integer id = person.getId();
         String name = person.getName();
         if (personRepository.existsByNameAndIdNot(name, id)) {
-            throw new FieldValidationException("name", "Already exists");
+            throw new FieldValidationException(
+                "name",
+                "Already exists"
+            );
         }
         if (!validator.validate(person).isEmpty()) {
             throw new RuntimeException("ORM constraints violation");
@@ -137,6 +147,8 @@ public class PersonService {
             .orElseThrow(() -> new RuntimeException("No person"));
     }
 
+    @Retryable(maxAttempts = 10, backoff = @Backoff(delay = 100))
+    @Transactional(isolation = Isolation.SERIALIZABLE)
     public Person add(Person person) {
         person.setId(null);
         validate(person);

@@ -13,10 +13,12 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.orm.jpa.vendor.AbstractJpaVendorAdapter;
 import org.springframework.orm.jpa.vendor.EclipseLinkJpaVendorAdapter;
+import org.springframework.retry.annotation.EnableRetry;
 import org.springframework.transaction.jta.JtaTransactionManager;
 
 @Configuration
 @EnableJpaAuditing
+@EnableRetry
 public class EclipseLinkJpaConfiguration extends JpaBaseConfiguration {
 
     protected EclipseLinkJpaConfiguration(
