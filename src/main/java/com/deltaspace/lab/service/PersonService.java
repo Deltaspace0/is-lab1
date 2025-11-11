@@ -161,11 +161,17 @@ public class PersonService {
         return personRepository.save(handleHelperObjects(person));
     }
 
+    @Retryable(
+        maxAttempts = 10,
+        backoff = @Backoff(delay = 100),
+        retryFor = TransactionSystemException.class
+    )
+    @Transactional(isolation = Isolation.SERIALIZABLE)
     public Person update(Integer id, Person person) {
         validate(person);
         Optional<Person> existingPerson = personRepository.findById(id);
         if (!existingPerson.isPresent()) {
-            return null;
+            throw new FieldValidationException("id", "No person");
         }
         person.setId(id);
         person.setCreationDate(existingPerson.get().getCreationDate());
