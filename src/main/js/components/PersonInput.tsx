@@ -104,7 +104,7 @@ export default function PersonInput(props: PersonInputProps) {
         </button>
         <button
             onClick={() => {
-              person.coordinates.id = undefined;
+              person.coordinates.id = 0;
               onChange(person);
             }}
             style={{width: '64px', height: '24px'}}>
@@ -150,7 +150,7 @@ export default function PersonInput(props: PersonInputProps) {
         </button>
         <button
             onClick={() => {
-              person.location.id = undefined;
+              person.location.id = 0;
               onChange(person);
             }}
             style={{width: '64px', height: '24px'}}>
