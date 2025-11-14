@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.deltaspace.lab.exception.FieldValidationException;
 import com.deltaspace.lab.model.ImportData;
 import com.deltaspace.lab.repository.ImportRepository;
 
@@ -24,15 +25,19 @@ public class ImportService {
     }
 
     public Integer importFile(MultipartFile file, String username) {
+        Boolean status = false;
+        Integer count = null;
         try {
-            Integer count = fileService.processFile(file, username);
-            ImportData data = new ImportData(true, username, count);
-            importRepository.save(data);
+            count = fileService.processFile(file, username);
+            status = true;
             return count;
+        } catch (FieldValidationException exception) {
+            throw exception;
         } catch (Exception exception) {
-            ImportData data = new ImportData(false, username, null);
-            importRepository.save(data);
             throw new RuntimeException();
+        } finally {
+            ImportData data = new ImportData(status, username, count);
+            importRepository.save(data);
         }
     }
 

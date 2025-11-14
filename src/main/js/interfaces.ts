@@ -41,6 +41,7 @@ export interface ImportData extends Entity {
 export interface ValidationError {
   defaultMessage: string;
   field: string;
+  personName: string;
 }
 
 export interface ErrorResponse {

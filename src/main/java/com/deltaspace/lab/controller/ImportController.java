@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.deltaspace.lab.exception.FieldValidationException;
 import com.deltaspace.lab.model.ImportData;
 import com.deltaspace.lab.service.ImportService;
 import com.deltaspace.lab.service.PageService;
@@ -69,13 +70,16 @@ public class ImportController {
     }
 
     @PostMapping
-    public ResponseEntity<Integer> uploadFile(
+    public ResponseEntity<Object> uploadFile(
         @RequestBody MultipartFile file,
         @CookieValue("uname") String username
     ) {
         try {
             Integer count = importService.importFile(file, username);
             return ResponseEntity.ok().body(count);
+        } catch (FieldValidationException exception) {
+            Object body = exception.getFieldErrors();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
         } catch (RuntimeException exception) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }

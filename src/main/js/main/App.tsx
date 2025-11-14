@@ -191,6 +191,12 @@ export default function App() {
       setFileStatus(`Created ${count} objects`);
     } else {
       setFileStatus('There was an error');
+      const body = await response.json();
+      if (body.errors instanceof Array) {
+        const errors: ValidationError[] = body.errors;
+        alert(`Person with name "${errors[0].personName}":`+
+          ` error in field ${errors[0].field} - ${errors[0].defaultMessage}`);
+      }
     }
     refreshPersons();
   };

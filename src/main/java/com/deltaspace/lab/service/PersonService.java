@@ -1,8 +1,10 @@
 package com.deltaspace.lab.service;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -16,6 +18,7 @@ import com.deltaspace.lab.model.Location;
 import com.deltaspace.lab.model.Person;
 import com.deltaspace.lab.repository.PersonRepository;
 
+import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
 
 @Service
@@ -52,7 +55,8 @@ public class PersonService {
         if (locationService.hasDuplicateName(person.getLocation())) {
             throw new FieldValidationException(
                 "location.name",
-                "Already exists"
+                "Already exists",
+                person.getName()
             );
         }
         Integer id = person.getId();
@@ -60,11 +64,19 @@ public class PersonService {
         if (personRepository.existsByNameAndIdNot(name, id)) {
             throw new FieldValidationException(
                 "name",
-                "Already exists"
+                "Already exists",
+                person.getName()
             );
         }
-        if (!validator.validate(person).isEmpty()) {
-            throw new RuntimeException("ORM constraints violation");
+        Set<ConstraintViolation<Person>> viols = validator.validate(person);
+        if (!viols.isEmpty()) {
+            Iterator<ConstraintViolation<Person>> iterator = viols.iterator();
+            ConstraintViolation<Person> violation = iterator.next();
+            throw new FieldValidationException(
+                violation.getPropertyPath().toString(),
+                violation.getMessage(),
+                person.getName()
+            );
         }
     }
 
