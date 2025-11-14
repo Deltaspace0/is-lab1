@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.deltaspace.lab.annotation.RetryableTransactional;
 import com.deltaspace.lab.enums.Color;
@@ -164,8 +165,10 @@ public class PersonService {
         return personRepository.save(handleHelperObjects(person));
     }
 
+    @Transactional
     public void deleteAll() {
         personRepository.deleteAll();
+        personRepository.resetSequence();
         coordinatesService.deleteAll();
         locationService.deleteAll();
     }

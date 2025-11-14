@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.deltaspace.lab.model.Location;
 import com.deltaspace.lab.repository.LocationRepository;
@@ -44,8 +45,10 @@ public class LocationService {
         return locationRepository.save(location);
     }
 
+    @Transactional
     public void deleteAll() {
         locationRepository.deleteAll();
+        locationRepository.resetSequence();
     }
 
     public void delete(Integer id) {

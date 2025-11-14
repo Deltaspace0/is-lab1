@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.deltaspace.lab.model.Coordinates;
 import com.deltaspace.lab.repository.CoordinatesRepository;
@@ -38,8 +39,10 @@ public class CoordinatesService {
         return coordinatesRepository.save(coordinates);
     }
 
+    @Transactional
     public void deleteAll() {
         coordinatesRepository.deleteAll();
+        coordinatesRepository.resetSequence();
     }
 
     public void delete(Integer id) {
