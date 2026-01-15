@@ -1,5 +1,7 @@
 package com.deltaspace.lab.model;
 
+import java.io.Serializable;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -11,7 +13,7 @@ import jakarta.validation.constraints.DecimalMin;
 
 @Entity
 @Table(name = "coordinates")
-public class Coordinates {
+public class Coordinates implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -6,6 +6,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -152,12 +155,14 @@ public class PersonService {
         return colorAmount*100/amount;
     }
 
+    @Cacheable("personCache")
     public Person getById(Integer id) {
         return personRepository
             .findById(id)
             .orElseThrow(() -> new RuntimeException("No person"));
     }
 
+    @CachePut(value = "personCache", key = "#result.id")
     @RetryableTransactional
     public Person add(Person person) {
         person.setId(null);
@@ -165,6 +170,7 @@ public class PersonService {
         return personRepository.save(handleHelperObjects(person));
     }
 
+    @CachePut(value = "personCache", key = "#id")
     @RetryableTransactional
     public Person update(Integer id, Person person) {
         validate(person);
@@ -177,6 +183,7 @@ public class PersonService {
         return personRepository.save(handleHelperObjects(person));
     }
 
+    @CacheEvict(value = "personCache", allEntries = true)
     @Transactional
     public void deleteAll() {
         personRepository.deleteAll();
@@ -185,6 +192,7 @@ public class PersonService {
         locationService.deleteAll();
     }
 
+    @CacheEvict(value = "personCache", key = "#id")
     public void delete(Integer id) {
         personRepository.deleteById(id);
     }

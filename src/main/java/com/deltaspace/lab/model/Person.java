@@ -1,5 +1,7 @@
 package com.deltaspace.lab.model;
 
+import java.io.Serializable;
+
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -22,7 +24,7 @@ import jakarta.validation.constraints.Size;
 @Entity
 @Table(name = "person")
 @EntityListeners(AuditingEntityListener.class)
-public class Person {
+public class Person implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

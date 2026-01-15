@@ -1,0 +1,35 @@
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.ehcache.org/v3"
+        xsi:schemaLocation="
+            http://www.ehcache.org/v3 http://www.ehcache.org/schema/ehcache-core-3.10.xsd">
+
+    <cache-template name="defaultTemplate">
+        <expiry>
+            <ttl unit="minutes">30</ttl>
+        </expiry>
+        <resources>
+            <heap unit="entries">1000</heap>
+        </resources>
+    </cache-template>
+
+    <cache alias="personCache" uses-template="defaultTemplate">
+        <key-type>java.lang.Integer</key-type>
+        <value-type>com.deltaspace.lab.model.Person</value-type>
+    </cache>
+
+    <cache alias="locationCache" uses-template="defaultTemplate">
+        <key-type>java.lang.Integer</key-type>
+        <value-type>com.deltaspace.lab.model.Location</value-type>
+    </cache>
+
+    <cache alias="importDataCache" uses-template="defaultTemplate">
+        <key-type>java.lang.Integer</key-type>
+        <value-type>com.deltaspace.lab.model.ImportData</value-type>
+    </cache>
+
+    <cache alias="coordinatesCache" uses-template="defaultTemplate">
+        <key-type>java.lang.Integer</key-type>
+        <value-type>com.deltaspace.lab.model.Coordinates</value-type>
+    </cache>
+
+</config>

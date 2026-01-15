@@ -1,5 +1,7 @@
 package com.deltaspace.lab.model;
 
+import java.io.Serializable;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -10,7 +12,7 @@ import jakarta.validation.constraints.Min;
 
 @Entity
 @Table(name = "import")
-public class ImportData {
+public class ImportData implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
