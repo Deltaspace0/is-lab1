@@ -2,9 +2,6 @@ package com.deltaspace.lab.service;
 
 import java.util.List;
 
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,14 +32,12 @@ public class LocationService {
         return locationRepository.count();
     }
 
-    @Cacheable("locationCache")
     public Location getById(Integer id) {
         return locationRepository
             .findById(id)
             .orElseThrow(() -> new RuntimeException("No location"));
     }
 
-    @CachePut(value = "locationCache", key = "#result.id")
     public Location update(Location location) {
         if (location == null) {
             return null;
@@ -50,14 +45,12 @@ public class LocationService {
         return locationRepository.save(location);
     }
 
-    @CacheEvict(value = "locationCache", allEntries = true)
     @Transactional
     public void deleteAll() {
         locationRepository.deleteAll();
         locationRepository.resetSequence();
     }
 
-    @CacheEvict(value = "locationCache", key = "#id")
     public void delete(Integer id) {
         locationRepository.deleteById(id);
     }
