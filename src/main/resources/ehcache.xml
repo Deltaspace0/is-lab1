@@ -1,35 +1,45 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xmlns="http://www.ehcache.org/v3"
+        xmlns:jsr107="http://www.ehcache.org/v3/jsr107"
         xsi:schemaLocation="
-            http://www.ehcache.org/v3 http://www.ehcache.org/schema/ehcache-core-3.10.xsd">
+            http://www.ehcache.org/v3 http://www.ehcache.org/schema/ehcache-core-3.10.xsd
+            http://www.ehcache.org/v3/jsr107 http://www.ehcache.org/schema/ehcache-107-ext-3.10.xsd">
+
+    <service>
+        <jsr107:defaults default-template="defaultTemplate"/>
+    </service>
 
     <cache-template name="defaultTemplate">
         <expiry>
             <ttl unit="minutes">30</ttl>
         </expiry>
-        <resources>
-            <heap unit="entries">1000</heap>
-        </resources>
+        <heap unit="entries">1000</heap>
+        <jsr107:mbeans enable-statistics="true"/>
     </cache-template>
 
-    <cache alias="personCache" uses-template="defaultTemplate">
+    <cache alias="com.deltaspace.lab.model.Person" uses-template="defaultTemplate">
         <key-type>java.lang.Integer</key-type>
         <value-type>com.deltaspace.lab.model.Person</value-type>
     </cache>
 
-    <cache alias="locationCache" uses-template="defaultTemplate">
+    <cache alias="com.deltaspace.lab.model.Location" uses-template="defaultTemplate">
         <key-type>java.lang.Integer</key-type>
         <value-type>com.deltaspace.lab.model.Location</value-type>
     </cache>
 
-    <cache alias="importDataCache" uses-template="defaultTemplate">
+    <cache alias="com.deltaspace.lab.model.ImportData" uses-template="defaultTemplate">
         <key-type>java.lang.Integer</key-type>
         <value-type>com.deltaspace.lab.model.ImportData</value-type>
     </cache>
 
-    <cache alias="coordinatesCache" uses-template="defaultTemplate">
+    <cache alias="com.deltaspace.lab.model.Coordinates" uses-template="defaultTemplate">
         <key-type>java.lang.Integer</key-type>
         <value-type>com.deltaspace.lab.model.Coordinates</value-type>
+    </cache>
+
+    <cache alias="query-results" uses-template="defaultTemplate">
+        <key-type>java.lang.String</key-type>
+        <value-type>java.util.List</value-type>
     </cache>
 
 </config>
