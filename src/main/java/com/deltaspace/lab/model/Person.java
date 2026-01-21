@@ -2,6 +2,9 @@ package com.deltaspace.lab.model;
 
 import java.io.Serializable;
 
+import org.eclipse.persistence.annotations.Cache;
+import org.eclipse.persistence.annotations.CacheCoordinationType;
+import org.eclipse.persistence.annotations.CacheType;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -23,6 +26,12 @@ import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "person")
+@Cache(
+    type = CacheType.SOFT,
+    size = 1000,
+    expiry = 3600000,
+    coordinationType = CacheCoordinationType.SEND_NEW_OBJECTS_WITH_CHANGES
+)
 @EntityListeners(AuditingEntityListener.class)
 public class Person implements Serializable {
 

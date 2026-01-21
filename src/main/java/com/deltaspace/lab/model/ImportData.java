@@ -2,6 +2,10 @@ package com.deltaspace.lab.model;
 
 import java.io.Serializable;
 
+import org.eclipse.persistence.annotations.Cache;
+import org.eclipse.persistence.annotations.CacheCoordinationType;
+import org.eclipse.persistence.annotations.CacheType;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -12,6 +16,12 @@ import jakarta.validation.constraints.Min;
 
 @Entity
 @Table(name = "import")
+@Cache(
+    type = CacheType.SOFT,
+    size = 1000,
+    expiry = 3600000,
+    coordinationType = CacheCoordinationType.SEND_NEW_OBJECTS_WITH_CHANGES
+)
 public class ImportData implements Serializable {
 
     @Id
